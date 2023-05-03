@@ -1,0 +1,34 @@
+html, body {
+    margin: 0;
+    height: 100vh;
+}
+
+canvas {
+    background-color: white;
+    height: 600px;
+    width: 600px;
+}
+
+input {
+    margin-top: 5px;
+}
+
+#container {
+    width: 800px;
+    margin: auto;
+    background-color: rgb(165, 187, 180);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#controls > input {
+    margin-top: 30px;
+}
