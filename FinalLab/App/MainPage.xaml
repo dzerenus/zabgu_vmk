@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:converters="clr-namespace:App.Converters"
+             x:Class="App.MainPage">
+    <ContentPage.Resources>
+        <converters:AllTrueMultiConverter x:Key="AllTrueConverter" />
+        <converters:InverterConverter x:Key="InverterConverter" />
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="50"
+            Padding="30,30"
+            VerticalOptions="Start"
+            >
+
+            <VerticalStackLayout Spacing="20">
+                <VerticalStackLayout.BindingContext>
+                    <vm:RegisterViewModel/>
+                </VerticalStackLayout.BindingContext>
+
+                <Label
+                    Text="Регистрация"
+                    FontSize="32"
+                    HorizontalOptions="Center" />
+
+                <VerticalStackLayout>
+                    <Entry
+                        Placeholder="Имя пользователя"
+                        Text="{Binding UsernameEntry.Content, Mode=TwoWay}" />
+
+                    <Entry
+                        Placeholder="E-Mail"
+                        Text="{Binding EMailEntry.Content, Mode=TwoWay}"/>
+
+                    <Entry
+                        Placeholder="Пароль"
+                        IsPassword="True"
+                        Text="{Binding PasswordEntry.Content, Mode=TwoWay}"/>
+
+                    <Entry
+                        Placeholder="Подтверждение пароля"
+                        IsPassword="True"
+                        Text="{Binding PasswordConfirmEntry.Content, Mode=TwoWay}"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding UsernameEntry.HasError}" Text="▸ Имя пользователя от 6 до 32 символов"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding EMailEntry.HasError}" Text="▸ Неверно задан E-Mail"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding PasswordEntry.HasError}" Text="▸ Пароль от 8 до 64 символов"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding PasswordConfirmEntry.HasError}" Text="▸ Пароли не совпадают"/>
+                </VerticalStackLayout>
+
+                <Button
+                    Text="Войти"
+                    HorizontalOptions="Fill">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource AllTrueConverter}">
+                            <Binding Path="UsernameEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="EMailEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="PasswordEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="PasswordConfirmEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+
+                <Label
+                    x:Name="LabelGoToRegister"
+                    Style="{DynamicResource LabelLink}"
+                    HorizontalTextAlignment="Center"
+                    Text="Авторизация" />
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
