@@ -103,3 +103,52 @@ for (int i = 0; i < rules.Count; i++)
 }
 
 rules.ForEach(Console.WriteLine);
+
+Console.WriteLine();
+Console.WriteLine("Конечный результат");
+
+var splitter = "     ";
+
+var outputs = rules.SelectMany(x => x.Outputs);
+var terminals = outputs.Select(x => x.Terminal).Distinct();
+
+var terminalString = splitter + " ";
+
+foreach (var terminal in terminals)
+    terminalString += terminal + splitter;
+
+Console.WriteLine(terminalString);
+
+foreach (var rule in rules)
+{
+    var terminalIndexes = new List<(RuleOutput output, int index)>();
+    var ruleString = rule.Input + splitter + " ";
+
+    foreach (var output in rule.Outputs)
+    {
+        var index = terminals.ToList().IndexOf(output.Terminal);
+
+        if (index < 0)
+            continue;
+
+        terminalIndexes.Add((output, index));
+    }
+
+    terminalIndexes.Sort((a, b) => a.index - b.index);
+
+    var prevIndex = 0;
+
+    foreach (var (output, index) in terminalIndexes)
+    {
+        var delta = index - prevIndex;
+        var deltaSring = string.Concat(Enumerable.Repeat(splitter + " ", delta));
+
+        if (deltaSring.Length > 0)
+            deltaSring = deltaSring[0..^1];
+
+        ruleString += deltaSring + output.Nonterminal;
+        prevIndex = index;
+    } 
+
+    Console.WriteLine(ruleString);
+}
