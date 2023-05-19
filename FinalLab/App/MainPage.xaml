@@ -4,6 +4,9 @@
              xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:converters="clr-namespace:App.Converters"
              x:Class="App.MainPage">
+    <ContentPage.BindingContext>
+        <vm:AuthPageViewModel x:Name="pageContext"/>
+    </ContentPage.BindingContext>
     <ContentPage.Resources>
         <converters:AllTrueMultiConverter x:Key="AllTrueConverter" />
         <converters:InverterConverter x:Key="InverterConverter" />
@@ -12,14 +15,50 @@
         <VerticalStackLayout
             Spacing="50"
             Padding="30,30"
-            VerticalOptions="Start"
-            >
+            VerticalOptions="Start" >
 
-            <VerticalStackLayout Spacing="20">
-                <VerticalStackLayout.BindingContext>
-                    <vm:RegisterViewModel/>
-                </VerticalStackLayout.BindingContext>
+            <VerticalStackLayout Spacing="20" IsVisible="{Binding Path=IsLoginVisible}">
+                <Label
+                    Text="Авторизация"
+                    FontSize="32"
+                    HorizontalOptions="Center" />
 
+                <VerticalStackLayout>
+                    <Entry
+                        Placeholder="E-Mail"
+                        Text="{Binding LoginVM.EMailEntry.Content, Mode=TwoWay}"/>
+
+                    <Entry
+                        Placeholder="Пароль"
+                        IsPassword="True"
+                        Text="{Binding LoginVM.PasswordEntry.Content, Mode=TwoWay}"/>
+
+                </VerticalStackLayout>
+
+                <VerticalStackLayout>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding LoginVM.EMailEntry.HasError}" Text="▸ Неверно задан E-Mail"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding LoginVM.PasswordEntry.HasError}" Text="▸ Пароль от 8 до 64 символов"/>
+                </VerticalStackLayout>
+
+                <Button
+                    Text="Войти"
+                    HorizontalOptions="Fill"
+                    Command="{Binding LoginVM.LoginCommand}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource AllTrueConverter}">
+                            <Binding Path="LoginVM.EMailEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="LoginVM.PasswordEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+
+                <Button
+                    Style="{DynamicResource TextButton}"
+                    Text="Регистрация" 
+                    Command="{Binding SwitchPageModeCommand}"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="20" IsVisible="{Binding Path=IsLoginVisible, Converter={StaticResource InverterConverter}}">
                 <Label
                     Text="Регистрация"
                     FontSize="32"
@@ -28,48 +67,48 @@
                 <VerticalStackLayout>
                     <Entry
                         Placeholder="Имя пользователя"
-                        Text="{Binding UsernameEntry.Content, Mode=TwoWay}" />
+                        Text="{Binding RegisterVM.UsernameEntry.Content, Mode=TwoWay}" />
 
                     <Entry
                         Placeholder="E-Mail"
-                        Text="{Binding EMailEntry.Content, Mode=TwoWay}"/>
+                        Text="{Binding RegisterVM.EMailEntry.Content, Mode=TwoWay}"/>
 
                     <Entry
                         Placeholder="Пароль"
                         IsPassword="True"
-                        Text="{Binding PasswordEntry.Content, Mode=TwoWay}"/>
+                        Text="{Binding RegisterVM.PasswordEntry.Content, Mode=TwoWay}"/>
 
                     <Entry
                         Placeholder="Подтверждение пароля"
                         IsPassword="True"
-                        Text="{Binding PasswordConfirmEntry.Content, Mode=TwoWay}"/>
+                        Text="{Binding RegisterVM.PasswordConfirmEntry.Content, Mode=TwoWay}"/>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout>
-                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding UsernameEntry.HasError}" Text="▸ Имя пользователя от 6 до 32 символов"/>
-                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding EMailEntry.HasError}" Text="▸ Неверно задан E-Mail"/>
-                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding PasswordEntry.HasError}" Text="▸ Пароль от 8 до 64 символов"/>
-                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding PasswordConfirmEntry.HasError}" Text="▸ Пароли не совпадают"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding RegisterVM.UsernameEntry.HasError}" Text="▸ Имя пользователя от 6 до 32 символов"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding RegisterVM.EMailEntry.HasError}" Text="▸ Неверно задан E-Mail"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding RegisterVM.PasswordEntry.HasError}" Text="▸ Пароль от 8 до 64 символов"/>
+                    <Label Style="{DynamicResource LabelError}" IsVisible="{Binding RegisterVM.PasswordConfirmEntry.HasError}" Text="▸ Пароли не совпадают"/>
                 </VerticalStackLayout>
 
                 <Button
-                    Text="Войти"
-                    HorizontalOptions="Fill">
+                    Text="Зарегистрироваться"
+                    HorizontalOptions="Fill"
+                    Command="{Binding RegisterVM.RegisterCommand}">
                     <Button.IsEnabled>
                         <MultiBinding Converter="{StaticResource AllTrueConverter}">
-                            <Binding Path="UsernameEntry.HasError" Converter="{StaticResource InverterConverter}"/>
-                            <Binding Path="EMailEntry.HasError" Converter="{StaticResource InverterConverter}"/>
-                            <Binding Path="PasswordEntry.HasError" Converter="{StaticResource InverterConverter}"/>
-                            <Binding Path="PasswordConfirmEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="RegisterVM.UsernameEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="RegisterVM.EMailEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="RegisterVM.PasswordEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="RegisterVM.PasswordConfirmEntry.HasError" Converter="{StaticResource InverterConverter}"/>
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>
 
-                <Label
-                    x:Name="LabelGoToRegister"
-                    Style="{DynamicResource LabelLink}"
-                    HorizontalTextAlignment="Center"
-                    Text="Авторизация" />
+                <Button
+                    Style="{DynamicResource TextButton}"
+                    Text="Авторизация" 
+                    Command="{Binding SwitchPageModeCommand}" />
 
             </VerticalStackLayout>
         </VerticalStackLayout>
