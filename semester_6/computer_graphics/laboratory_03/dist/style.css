@@ -1,0 +1,21 @@
+html body {
+    padding: 0;
+    margin: 0;
+}
+
+canvas {
+    border: 1px black solid;
+    margin-left: 50px;
+    margin-top: 50px;
+}
+
+.container {
+    width: 600px;
+    height: 100vh;
+    margin: auto;
+    background-color: rgb(234, 240, 233);
+}
+
+.controls {
+    margin-left: 50px;
+}

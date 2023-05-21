@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+}
+
+canvas {
+    background: white;
+}
+
+.container {
+    background-color: blanchedalmond;
+    width: 800px;
+    height: calc(100vh - 50px);
+    margin: auto;
+    padding-top: 50px;
+}
+
+.container * {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}

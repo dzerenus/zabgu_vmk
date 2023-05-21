@@ -1,0 +1,22 @@
+html, body {
+    margin: 0;
+    height: 100vh;
+}
+
+canvas {
+    background-color: white;
+}
+
+input {
+    margin-top: 30px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    height: 100%;
+    max-width: 1200px;
+    background-color: gray;
+}

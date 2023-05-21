@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Лабораторная работа №5</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="container">
+            <div>
+                <canvas id="canvas" height="300" width="300"></canvas>
+            </div>
+            
+            <div>
+                <label for="drawcolor">Цвет рисования:</label>
+                <input id="drawcolor" type="text" value="#000000"/>
+            </div>
+
+            <div>
+                <label for="fillcolor">Цвет заливки:</label>
+                <input id="fillcolor" type="text" value="#FF0000"/>
+            </div>
+
+            <div>
+                <input id="clearButton" type="button" value="Очистить холст"/>
+            </div>
+        </div>
+        <script src="dist/main.js"></script>
+    </body>
+</html>
