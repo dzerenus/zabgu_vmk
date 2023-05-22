@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Runtime;
 
 namespace App;
@@ -10,6 +11,8 @@ public class MainApplication : MauiApplication
 		: base(handle, ownership)
 	{
 	}
+
+	public void StartIndent(Intent intent) => this.StartActivity(intent);
 
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 }

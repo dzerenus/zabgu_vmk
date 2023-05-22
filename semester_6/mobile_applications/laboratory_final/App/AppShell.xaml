@@ -7,14 +7,25 @@
     Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False">
 
+    
+    
+    <TabBar Route="TabPage">
+        <Tab Title="Профиль" Icon="profile.png">
+            <ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" />
+        </Tab>
+        <Tab Title="Калькулятор" Icon="calculator.png">
+            <ShellContent ContentTemplate="{DataTemplate local:CalculatorPage}" />
+        </Tab>
+        <Tab Title="Погода" Icon="weather.png">
+            <ShellContent ContentTemplate="{DataTemplate local:WeatherPage}" />
+        </Tab>
+        <Tab Title="IoT" Icon="json.png">
+            <ShellContent ContentTemplate="{DataTemplate local:IotPage}" />
+        </Tab>
+    </TabBar>
+
     <ShellContent
         Title="Авторизация"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="LoginPage" />
-
-    <ShellContent
-        Title="Контент"
-        ContentTemplate="{DataTemplate local:PageContent}"
-        Route="PageContent"/>
-
 </Shell>

@@ -38,10 +38,7 @@ public class AuthPageViewModel : INotifyPropertyChanged
 
 
     private async Task Auth(string url, object content)
-    {
-        await Shell.Current.GoToAsync("PageContent");
-        return;
-        
+    {        
         var response = await Requester.Post<ResponseAuth>(url, content);
 
         if (response == null)
@@ -52,7 +49,7 @@ public class AuthPageViewModel : INotifyPropertyChanged
 
         if (response.Result)
         {
-            Alert.Show("Поздравляю", "Авторизация выполнена", "ОК");
+            await Shell.Current.GoToAsync("//TabPage");
             return;
         }
 
