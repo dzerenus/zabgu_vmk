@@ -8,6 +8,16 @@ public delegate void AuthArgs(string url, object content);
 
 public class AuthPageViewModel : INotifyPropertyChanged
 {
+    public bool IsRequestWaiting
+    {
+        get => _isRequestWaiting;
+        set
+        {
+            _isRequestWaiting = value;
+            OnPropertyChanged(nameof(IsRequestWaiting));
+        }
+    }
+
     public bool IsLoginVisible
     {
         get => _isLoginVisible;
@@ -24,6 +34,7 @@ public class AuthPageViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     
     private bool _isLoginVisible = true;
+    private bool _isRequestWaiting = false;
 
     public AuthPageViewModel()
     {
@@ -38,8 +49,12 @@ public class AuthPageViewModel : INotifyPropertyChanged
 
 
     private async Task Auth(string url, object content)
-    {        
+    {
+        IsRequestWaiting = true;
+
         var response = await Requester.Post<ResponseAuth>(url, content);
+
+        IsRequestWaiting = false;
 
         if (response == null)
         {
@@ -49,6 +64,7 @@ public class AuthPageViewModel : INotifyPropertyChanged
 
         if (response.Result)
         {
+            Settings.CurrentUserId = response.UserId;
             await Shell.Current.GoToAsync("//TabPage");
             return;
         }

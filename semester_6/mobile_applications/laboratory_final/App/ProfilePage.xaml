@@ -1,12 +1,63 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:converters="clr-namespace:App.Converters"
              x:Class="App.ProfilePage"
-             Title="ProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             Title="ProfilePage"
+             Loaded="ContentPage_Loaded">
+    <ContentPage.Resources>
+        <converters:AllTrueMultiConverter x:Key="AllTrueConverter" />
+        <converters:InverterConverter x:Key="InverterConverter" />
+    </ContentPage.Resources>
+    <ContentPage.BindingContext>
+        <vm:ProfileViewModel/>
+    </ContentPage.BindingContext>
+    <VerticalStackLayout Spacing="30" Margin="20">
+        <VerticalStackLayout Spacing="5">
+            <Entry
+                Text="{Binding EmailEntry.Content}"
+                Placeholder="Новый E-Mail"/>
+            <Entry
+                Text="{Binding UsernameEntry.Content}"
+                Placeholder="Новое имя пользователя"/>
+            <Entry
+                Text="{Binding NewPasswordEntry.Content}"
+                Placeholder="Новый пароль"
+                IsPassword="True"/>
+        </VerticalStackLayout>
+        
+        <VerticalStackLayout>
+            <Label
+                Style="{DynamicResource LabelError}"
+                IsVisible="{Binding EmailEntry.HasError}"
+                Text="> Почта введена неверно"/>
+            <Label 
+                Style="{DynamicResource LabelError}"
+                IsVisible="{Binding UsernameEntry.HasError}"
+                Text="> Имя пользователя введено неверно"/>
+            <Label 
+                Style="{DynamicResource LabelError}"
+                IsVisible="{Binding NewPasswordEntry.HasError}"
+                Text="> Пароль введён неверно"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Spacing="5">
+            <Entry
+                Text="{Binding OldPasswordEntry.Content}"
+                Placeholder="Текущий пароль"
+                IsPassword="True"/>
+            <Button
+                Text="Обновить данные"
+                Command="{Binding UpdateUserCommand}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource AllTrueConverter}">
+                        <Binding Path="EmailEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                        <Binding Path="UsernameEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                        <Binding Path="NewPasswordEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+        </VerticalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

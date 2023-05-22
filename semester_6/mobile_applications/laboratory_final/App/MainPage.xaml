@@ -48,6 +48,7 @@
                         <MultiBinding Converter="{StaticResource AllTrueConverter}">
                             <Binding Path="LoginVM.EMailEntry.HasError" Converter="{StaticResource InverterConverter}"/>
                             <Binding Path="LoginVM.PasswordEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="IsRequestWaiting" Converter="{StaticResource InverterConverter}"/>
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>
@@ -101,6 +102,7 @@
                             <Binding Path="RegisterVM.EMailEntry.HasError" Converter="{StaticResource InverterConverter}"/>
                             <Binding Path="RegisterVM.PasswordEntry.HasError" Converter="{StaticResource InverterConverter}"/>
                             <Binding Path="RegisterVM.PasswordConfirmEntry.HasError" Converter="{StaticResource InverterConverter}"/>
+                            <Binding Path="IsRequestWaiting" Converter="{StaticResource InverterConverter}"/>
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>

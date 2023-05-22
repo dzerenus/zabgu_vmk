@@ -4,7 +4,7 @@ namespace App;
 
 internal static class Requester
 {
-    public static async Task<T?> Post<T>(string url, object content)
+    public static async Task<T?> Post<T>(string url, object? content)
     {
         try
         {

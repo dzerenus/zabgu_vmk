@@ -7,14 +7,12 @@
     Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False">
 
-    
-    
     <TabBar Route="TabPage">
-        <Tab Title="Профиль" Icon="profile.png">
-            <ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" />
-        </Tab>
         <Tab Title="Калькулятор" Icon="calculator.png">
             <ShellContent ContentTemplate="{DataTemplate local:CalculatorPage}" />
+        </Tab>
+        <Tab Title="Профиль" Icon="profile.png">
+            <ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" />
         </Tab>
         <Tab Title="Погода" Icon="weather.png">
             <ShellContent ContentTemplate="{DataTemplate local:WeatherPage}" />
