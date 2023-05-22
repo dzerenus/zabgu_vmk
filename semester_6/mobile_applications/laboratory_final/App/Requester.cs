@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace App;
 
@@ -10,7 +11,9 @@ internal static class Requester
         {
             using var client = new HttpClient();
             var respone = await client.PostAsJsonAsync(url, content);
-            return await respone.Content.ReadFromJsonAsync<T>();
+            var json = await respone.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<T>(json);
+            return result;
         }
         catch (Exception)
         {
