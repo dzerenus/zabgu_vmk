@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
              x:Class="App.IotPage"
-             Title="IotPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="IotPage"
+             Loaded="ContentPage_Loaded">
+    <ContentPage.BindingContext>
+        <vm:IotViewModel/>
+    </ContentPage.BindingContext>
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <VerticalStackLayout Grid.Row="0" Spacing="5">
+            <Entry
+                Text="{Binding Address.Content}"
+                Placeholder="Адрес API"/>
+            <Entry
+                Text="{Binding Parameter.Content}"
+                Placeholder="Параметр"/>
+        </VerticalStackLayout>
+
+        <Button
+            Grid.Row="1"
+            Text="Загрузить данные" Margin="0,20"
+            Command="{Binding LoadDataCommand}"/>
+
+        <GraphicsView 
+            Grid.Row="2"
+            x:Name="gvChart"
+            Drawable="{Binding Drawable}" 
+            HorizontalOptions="StartAndExpand" 
+            VerticalOptions="StartAndExpand" />
+
+    </Grid> 
 </ContentPage>

@@ -7,6 +7,11 @@
     Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False">
 
+    <ShellContent
+        Title="Авторизация"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="LoginPage" />
+
     <TabBar Route="TabPage">
         <Tab Title="Калькулятор" Icon="calculator.png">
             <ShellContent ContentTemplate="{DataTemplate local:CalculatorPage}" />
@@ -21,9 +26,4 @@
             <ShellContent ContentTemplate="{DataTemplate local:IotPage}" />
         </Tab>
     </TabBar>
-
-    <ShellContent
-        Title="Авторизация"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="LoginPage" />
 </Shell>
