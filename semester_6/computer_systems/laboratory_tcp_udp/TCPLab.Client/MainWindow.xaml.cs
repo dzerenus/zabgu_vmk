@@ -25,19 +25,12 @@ namespace TCPLab.Client
         public MainWindow()
         {
             InitializeComponent();
-            Task.Run(Communicating);
-        }
+            var context = DataContext as MainWindowViewModel;
 
-        private async Task Communicating()
-        {
-            var client = new TcpConnector();
-            var connected = await client.TryConnect(IPAddress.Parse(Settings.IpAddress));
+            if (context == null)
+                throw new InvalidOperationException();
 
-            if (!connected)
-                Application.Current.Shutdown();
-
-            this.Closed += (s, e) => 
-            client.Send(new(MessageType.Disconnect, "shprizz", DateTimeOffset.Now, null));
+            Closed += (s, e) => context.ApplicationExit();
         }
     }
 }

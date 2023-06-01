@@ -18,10 +18,9 @@ try
         var client = await _tcp.AcceptTcpClientAsync();
         var connection = new TcpConnection(client, _messages);
         connection.OnNewMessage += OnNewTcpMessage;
+        connection.OnClosedConnection += OnNewTcpMessage;
         _connections.Add(connection);
         connection.Start();
-        Console.WriteLine("Connected!");
-        Console.WriteLine($"Connection count: {_connections.Count}");
     }
 }
 
@@ -33,16 +32,12 @@ finally
 
 void OnNewTcpMessage(TcpConnection sender, Message message)
 {
+    _connections.ForEach(x => x.Send(message));
+
     if (message.Type == MessageType.Disconnect)
     {
         sender.Stop();
         _connections.Remove(sender);
-    }
-
-    foreach (var connection in _connections)
-    {
-        if (connection != sender)
-            connection.Send(message);
     }
 
     _messages.Add(message);

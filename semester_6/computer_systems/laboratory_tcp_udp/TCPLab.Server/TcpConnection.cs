@@ -14,6 +14,7 @@ internal delegate void TcpConntectionEventArgs(TcpConnection sender, Message mes
 internal class TcpConnection
 {
     public event TcpConntectionEventArgs? OnNewMessage;
+    public event TcpConntectionEventArgs? OnClosedConnection;
 
     private const ushort BufferSize = ushort.MaxValue;
     private readonly List<Message> _messagesToSend = new ();
@@ -50,19 +51,27 @@ internal class TcpConnection
 
         while (_isWork)
         {
-            if (_messagesToSend.Count > 0)
+            try
             {
-                await SendMessageToClient(stream, _messagesToSend[0]);
-                _messagesToSend.RemoveAt(0);
+                if (_messagesToSend.Count > 0)
+                {
+                    await SendMessageToClient(stream, _messagesToSend[0]);
+                    _messagesToSend.RemoveAt(0);
+                }
+
+                var message = await GetMessageFromClient(stream);
+
+                if (message == null)
+                    Thread.Sleep(100);
+
+                else
+                    OnNewMessage?.Invoke(this, message);
             }
-
-            var message = await GetMessageFromClient(stream);
-
-            if (message == null)
-                Thread.Sleep(100);
-
-            else 
-                OnNewMessage?.Invoke(this, message);
+            
+            catch (IOException)
+            {
+                OnClosedConnection?.Invoke(this, new(MessageType.Disconnect, "User", DateTimeOffset.Now, null));
+            }
         }
 
         _client.Close();
@@ -78,8 +87,18 @@ internal class TcpConnection
         if (!buffer.Any() || buffer.All(x => x == 0))
             return null;
 
-        var json = Encoding.UTF8.GetString(buffer.ToArray());
+        var json = Encoding.UTF8.GetString(buffer.Where(x => x != 0).ToArray());
         var message = JsonSerializer.Deserialize<Message>(json);
+
+        if (message?.Type == MessageType.Connect)
+            Console.WriteLine($"Пользователь {message.Username} подключился.");
+
+        if (message?.Type == MessageType.Disconnect)
+            Console.WriteLine($"Пользователь {message.Username} отключился.");
+
+        if (message?.Type == MessageType.Message)
+            Console.WriteLine($"Пользователь {message.Username} прислал '{message.Content}'.");
+
         return message;
     } 
 

@@ -1,6 +1,7 @@
 ﻿namespace TCPLab.Client;
 
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,11 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using TCPLab.Core;
 
-internal delegate void MessageEventArgs(Message message);
-
-internal class TcpConnector
+internal class TcpConnector : INetworkClient
 {
-    public event MessageEventArgs? OnNewMessage;
+    public bool IsConnected => _connected;
 
     private readonly TcpClient _client;
     private bool _connected = false;
@@ -24,6 +23,16 @@ internal class TcpConnector
         _client = new();
     }
 
+    public event MessageEventArgs? OnNewMessage;
+
+    public void Connect(string username, IPAddress address)
+    {
+        _connected = true;
+        _client.Connect(address, Settings.TcpPort);
+        Send(new Message(MessageType.Connect, username, DateTimeOffset.Now, null));
+        Task.Run(Commincating);
+    }
+
     public void Send(Message message)
     {
         if (!_connected)
@@ -32,21 +41,9 @@ internal class TcpConnector
         _messageToSend = message;
     }
 
-    public async Task<bool> TryConnect(IPAddress ip)
+    public void Disconnect(string username)
     {
-        try
-        {
-            await _client.ConnectAsync(ip, Settings.TcpPort);
-            var thread = new Thread(async () => await Commincating());
-            _connected = true;
-            thread.Start();
-            return true;
-        }
-
-        catch (Exception ex)
-        {
-            return false;
-        }
+        _messageToSend = new Message(MessageType.Disconnect, username, DateTimeOffset.Now, null);
     }
 
     private async Task Commincating()
@@ -56,24 +53,57 @@ internal class TcpConnector
 
         var stream = _client.GetStream();
 
-        while (_connected)
+        while (_connected || _messageToSend != null)
         {
             if (_messageToSend != null)
             {
+                if (_messageToSend.Type == MessageType.Disconnect)
+                    _connected = false;
+
                 var json = JsonSerializer.Serialize(_messageToSend);
                 var bytes = Encoding.UTF8.GetBytes(json);
                 await stream.WriteAsync(bytes);
+                _messageToSend = null;
             }
 
             if (stream.DataAvailable)
             {
                 var buffer = new byte[Settings.BufferSize];
                 await stream.ReadAsync(buffer);
-                var json = Encoding.UTF8.GetString(buffer);
-                var message = JsonSerializer.Deserialize<Message>(json);
+                var contentBytes = buffer.Where(x => x != 0).ToArray();
 
-                if (message != null)
-                    OnNewMessage?.Invoke(message);
+                if (contentBytes.Length == 0)
+                {
+                    Thread.Sleep(100);
+                    continue;
+                }
+                try
+                {
+                    var json = Encoding.UTF8.GetString(contentBytes);
+
+                    var parts = json.Split("}{");
+
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        if (i != parts.Length - 1)
+                            parts[i] += "}";
+
+                        if (i != 0)
+                            parts[i] = "{" + parts[i];
+                    }
+
+                    foreach (var part in parts)
+                    {
+                        var message = JsonSerializer.Deserialize<Message>(part);
+                        if (message != null)
+                            OnNewMessage?.Invoke(message);
+                    }
+                }
+                
+                catch (Exception ex)
+                {
+                    return;
+                }
             } 
 
             else
@@ -81,5 +111,8 @@ internal class TcpConnector
                 Thread.Sleep(100);
             }
         }
+
+        stream.Close();
+        _client.Close();
     }
 }

@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:TCPLab.Client"
         mc:Ignorable="d"
         Title="TCP/UDP Клиент" Height="450" Width="800">
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -16,32 +19,38 @@
         <Grid Background="Wheat"></Grid>
         <StackPanel Orientation="Horizontal" Margin="5">
             <TextBlock VerticalAlignment="Center">IP-Адрес сервера:</TextBlock>
-            <TextBox Width="200" Margin="5 0" VerticalContentAlignment="Center"></TextBox>
+            <TextBox Width="200" Margin="5 0" VerticalContentAlignment="Center" Text="{Binding ServerIpAddress, Mode=TwoWay}" IsEnabled="{Binding IsConnectionSettingsEnable}"></TextBox>
             <TextBlock VerticalAlignment="Center">Порт:</TextBlock>
-            <TextBox Width="80" Margin="5 0" VerticalContentAlignment="Center" IsReadOnly="True"/>
-            <ComboBox Margin="5 0" Width="50" SelectedIndex="0">
-                <ComboBoxItem>TCP</ComboBoxItem>
-                <ComboBoxItem>UDP</ComboBoxItem>
-            </ComboBox>
-            <Button Width="130" VerticalContentAlignment="Center">Подключиться</Button>
+            <TextBox Width="80" Margin="5 0" VerticalContentAlignment="Center" IsReadOnly="True" Text="{Binding ServerPort, Mode=OneWay}" IsEnabled="{Binding IsConnectionSettingsEnable}"/>
+            <ComboBox Margin="5 0" Width="60" SelectedItem="{Binding ConnectionMode}" ItemsSource="{Binding ConnectionModes}"/>
+            <Button Width="130" VerticalContentAlignment="Center" Command="{Binding ConnectOrDisconnectCommand}">Подключиться</Button>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel VerticalAlignment="Bottom" CanHorizontallyScroll="True" Margin="5">
-                <Border CornerRadius="0" Background="LightGoldenrodYellow" BorderBrush="Gray" BorderThickness="0 0 0 1" Margin="0 2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="50"/>
-                        </Grid.ColumnDefinitions>
+            <ItemsControl ItemsSource="{Binding Messages}" VerticalAlignment="Top" Margin="5">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:MessageViewModel}">
+                        <Border CornerRadius="0" Background="{Binding Background}" BorderBrush="Gray" BorderThickness="0 0 0 1" Margin="0 2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Пользователь №32:" FontWeight="Bold" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-                        <TextBlock Grid.Column="1" Margin="5" TextWrapping="Wrap" Text="Сообщение" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="2" Margin="5" Text="21:30:15" VerticalAlignment="Bottom" FontSize="8" Opacity="0.7" HorizontalAlignment="Right"/>
-                    </Grid>
-                </Border>
-            </StackPanel>
+                                <TextBlock Text="{Binding Username}" FontWeight="Bold" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                                <TextBlock Grid.Column="1" Margin="5" TextWrapping="Wrap" Text="{Binding Content}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Margin="5" Text="{Binding MessageTime}" VerticalAlignment="Bottom" FontSize="8" Opacity="0.7" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
 
         <Grid Grid.Row="2" Background="Wheat">
@@ -51,9 +60,9 @@
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Пользователь №23"></TextBlock>
-            <TextBox Grid.Column="1" Margin="5" VerticalContentAlignment="Center"></TextBox>
-            <Button Grid.Column="2" Margin="5" VerticalContentAlignment="Center">Отправить</Button>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Username}"></TextBlock>
+            <TextBox Grid.Column="1" Margin="5" VerticalContentAlignment="Center" Text="{Binding MessageText, Mode=TwoWay}" IsEnabled="{Binding IsMessageSendingEnable}"></TextBox>
+            <Button Grid.Column="2" Margin="5" VerticalContentAlignment="Center" Command="{Binding SendMessageCommand}" IsEnabled="{Binding IsMessageSendingEnable}">Отправить</Button>
         </Grid>
     </Grid>
 </Window>
