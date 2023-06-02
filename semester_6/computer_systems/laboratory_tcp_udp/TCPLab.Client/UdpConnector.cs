@@ -26,8 +26,8 @@ internal class UdpConnector : INetworkClient
 
         _socket = socket;
 
-        socket.Bind(new IPEndPoint(address, Settings.UdpPort));
-        Task.Run(async () => await RecieveMessage(socket));
+        socket.Bind(new IPEndPoint(IPAddress.Any, Settings.UdpPort));
+        Task.Run(async () => await RecieveMessage(socket, address));
     }
 
     public void Disconnect(string username)
@@ -47,12 +47,12 @@ internal class UdpConnector : INetworkClient
         _socket.Send(data);
     }
 
-    private async Task RecieveMessage(Socket socket)
+    private async Task RecieveMessage(Socket socket, IPAddress ip)
     {
         while (_isConnected)
         {
             var data = new byte[Settings.BufferSize];
-            var result = await socket.ReceiveFromAsync(data, new IPEndPoint(IPAddress.Any, 0));
+            var result = await socket.ReceiveFromAsync(data, new IPEndPoint(ip, Settings.UdpPort));
 
             var messageJson = Encoding.UTF8.GetString(data, 0, result.ReceivedBytes);
 
