@@ -13,8 +13,10 @@ var udp = new UdpConnection();
 
 udp.OnNewMessage += msg =>
 {
-    
+    _connections.ForEach(x => x.Send(msg));
 };
+
+udp.Start();
 
 try
 {

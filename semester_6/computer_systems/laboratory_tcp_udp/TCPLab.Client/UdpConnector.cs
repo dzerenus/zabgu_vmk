@@ -30,10 +30,12 @@ internal class UdpConnector : INetworkClient
 
         socket.Bind(new IPEndPoint(IPAddress.Any, Settings.UdpPort));
         Task.Run(async () => await RecieveMessage(socket, address));
+        Send(new Message(MessageType.Connect, username, DateTimeOffset.Now, null));
     }
 
     public void Disconnect(string username)
     {
+        Send(new Message(MessageType.Disconnect, username, DateTimeOffset.Now, null));
         _isConnected = false;
         _socket?.Close(1000);
     }

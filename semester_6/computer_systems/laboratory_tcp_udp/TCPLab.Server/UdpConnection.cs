@@ -14,44 +14,80 @@ public delegate void UdpMessageEventArgs(Message message);
 
 public class UdpConnection
 {
+    List<EndPoint> _connections = new();
+
     private bool _isConnected;
 
     public event UdpMessageEventArgs? OnNewMessage;
 
+    private Socket? _socket;
+
     public void Start()
     {
-        using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        socket.Bind(new IPEndPoint(IPAddress.Parse(Settings.IpAddress), Settings.UdpPort));
 
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        socket.Bind(new IPEndPoint(IPAddress.Parse(Settings.IpAddress), Settings.UdpPort));
+        
+        _socket = socket;
         _isConnected = true;
 
         Task.Run(async () => await RecieveMessage(socket));
     }
 
+    private async Task Send(Message message)
+    {
+        if (_socket == null)
+            throw new NullReferenceException();
+
+        var json = JsonSerializer.Serialize(message);
+        var bytes = Encoding.UTF8.GetBytes(json);
+
+        foreach (var conn in _connections)
+            await _socket.SendToAsync(bytes, conn);
+    }
+
     private async Task RecieveMessage(Socket socket)
     {
-        while (_isConnected)
+        try
         {
-            var data = new byte[Settings.BufferSize];
-            var result = await socket.ReceiveFromAsync(data, new IPEndPoint(IPAddress.Any, 0));
-
-            var messageJson = Encoding.UTF8.GetString(data, 0, result.ReceivedBytes);
-
-            try
+            while (_isConnected)
             {
-                var message = JsonSerializer.Deserialize<Message>(messageJson);
+                var data = new byte[Settings.BufferSize];
+                var result = await socket.ReceiveFromAsync(data, new IPEndPoint(IPAddress.Any, 0));
 
-                if (message != null)
-                    OnNewMessage?.Invoke(message);
+                var messageJson = Encoding.UTF8.GetString(data, 0, result.ReceivedBytes);
+
+                try
+                {
+                    var message = JsonSerializer.Deserialize<Message>(messageJson);
+
+                    if (message != null)
+                    {
+                        if (message.Type == MessageType.Connect)
+                            _connections.Add(result.RemoteEndPoint);
+
+                        await Send(message);
+
+                        if (message.Type == MessageType.Disconnect)
+                            _connections.Remove(result.RemoteEndPoint);
+
+                        OnNewMessage?.Invoke(message);
+                    }
+                }
+
+                catch
+                {
+                    await Task.Delay(100);
+                }
             }
 
-            catch
-            {
-                await Task.Delay(100);
-            }
+            socket.Close();
         }
-
-        socket.Close();
+        
+        catch (Exception ex)
+        {
+            return;
+        }
     }
 
 }
