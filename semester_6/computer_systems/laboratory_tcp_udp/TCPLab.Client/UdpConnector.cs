@@ -16,13 +16,15 @@ internal class UdpConnector : INetworkClient
     public bool IsConnected => _isConnected;
     private bool _isConnected = false;
     private Socket? _socket;
+    private IPAddress? _ip;
 
     public event MessageEventArgs? OnNewMessage;
 
     public void Connect(string username, IPAddress address)
     {
+        _ip = address;
         _isConnected = true;
-        using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
         _socket = socket;
 
@@ -38,13 +40,13 @@ internal class UdpConnector : INetworkClient
 
     public void Send(Message message)
     {
-        if (_socket == null || !_isConnected)
+        if (_socket == null || _ip == null || !_isConnected)
             throw new InvalidOperationException();
 
         var json = JsonSerializer.Serialize(message);
         var data = Encoding.UTF8.GetBytes(json);
 
-        _socket.Send(data);
+        _socket.SendTo(data, new IPEndPoint(_ip, Settings.UdpPort));
     }
 
     private async Task RecieveMessage(Socket socket, IPAddress ip)
