@@ -143,7 +143,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         _client = ConnectionMode == "TCP"
             ? new TcpConnector()
-            : throw new NotImplementedException();
+            : new UdpConnector();
 
         _client.OnNewMessage += msg => Application.Current.Dispatcher.BeginInvoke(() => { Messages.Insert(0, new(msg)); });
 

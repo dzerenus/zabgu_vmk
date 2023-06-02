@@ -9,6 +9,13 @@ List<TcpConnection> _connections = new();
 var _ip = IPAddress.Parse(Settings.IpAddress);
 var _tcp = new TcpListener(_ip, Settings.TcpPort);
 
+var udp = new UdpConnection();
+
+udp.OnNewMessage += msg =>
+{
+    
+};
+
 try
 {
     _tcp.Start();
