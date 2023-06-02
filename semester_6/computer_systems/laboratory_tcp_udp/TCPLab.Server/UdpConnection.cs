@@ -14,7 +14,7 @@ public delegate void UdpMessageEventArgs(Message message);
 
 public class UdpConnection
 {
-    List<EndPoint> _connections = new();
+    List<IPAddress> _connections = new();
 
     private bool _isConnected;
 
@@ -26,7 +26,7 @@ public class UdpConnection
     {
 
         var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        socket.Bind(new IPEndPoint(IPAddress.Parse(Settings.IpAddress), Settings.UdpPort));
+        socket.Bind(new IPEndPoint(IPAddress.Parse(Settings.IpAddress), Settings.UdpPort + 10));
         
         _socket = socket;
         _isConnected = true;
@@ -43,7 +43,7 @@ public class UdpConnection
         var bytes = Encoding.UTF8.GetBytes(json);
 
         foreach (var conn in _connections)
-            await _socket.SendToAsync(bytes, conn);
+            await _socket.SendToAsync(bytes, new IPEndPoint(conn, Settings.UdpPort));
     }
 
     private async Task RecieveMessage(Socket socket)
@@ -60,16 +60,20 @@ public class UdpConnection
                 try
                 {
                     var message = JsonSerializer.Deserialize<Message>(messageJson);
+                    var ipEndPoint = result.RemoteEndPoint as IPEndPoint;
+
+                    if (ipEndPoint == null)
+                        throw new NullReferenceException();
 
                     if (message != null)
                     {
                         if (message.Type == MessageType.Connect)
-                            _connections.Add(result.RemoteEndPoint);
+                            _connections.Add(ipEndPoint.Address);
 
                         await Send(message);
 
                         if (message.Type == MessageType.Disconnect)
-                            _connections.Remove(result.RemoteEndPoint);
+                            _connections.Remove(ipEndPoint.Address);
 
                         OnNewMessage?.Invoke(message);
                     }

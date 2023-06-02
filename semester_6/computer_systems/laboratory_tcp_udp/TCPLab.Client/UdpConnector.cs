@@ -48,7 +48,7 @@ internal class UdpConnector : INetworkClient
         var json = JsonSerializer.Serialize(message);
         var data = Encoding.UTF8.GetBytes(json);
 
-        _socket.SendTo(data, new IPEndPoint(_ip, Settings.UdpPort));
+        _socket.SendTo(data, new IPEndPoint(_ip, Settings.UdpPort + 10));
     }
 
     private async Task RecieveMessage(Socket socket, IPAddress ip)
