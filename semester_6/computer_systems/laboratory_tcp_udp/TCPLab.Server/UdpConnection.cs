@@ -34,7 +34,7 @@ public class UdpConnection
         Task.Run(async () => await RecieveMessage(socket));
     }
 
-    private async Task Send(Message message)
+    public async Task Send(Message message)
     {
         if (_socket == null)
             throw new NullReferenceException();

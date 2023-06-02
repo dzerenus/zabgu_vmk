@@ -50,4 +50,5 @@ void OnNewTcpMessage(TcpConnection sender, Message message)
     }
 
     _messages.Add(message);
+    udp.Send(message).Wait();
 }
