@@ -1,0 +1,31 @@
+﻿<Window x:Class="VlanSniffer.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VlanSniffer.App"
+        mc:Ignorable="d"
+        Title="VLAN Пакеты" Height="450" Width="800">
+    <Window.DataContext>
+        <local:MainWindowVM/>
+    </Window.DataContext>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Button Width="170" Height="24" HorizontalAlignment="Left" Margin="0 0 0 5" Content="{Binding ButtonText}" Command="{Binding StartStopCommand}"/>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Packets}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="MAC Source" Binding="{Binding MacSource}"></DataGridTextColumn>
+                <DataGridTextColumn Header="MAC Destination" Binding="{Binding MacDestination}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Тип пакета" Binding="{Binding PacketType}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Приоритет" Binding="{Binding VlanPriority}"></DataGridTextColumn>
+                <DataGridTextColumn Header="CFI (DEF)" Binding="{Binding VlanCefDei}"></DataGridTextColumn>
+                <DataGridTextColumn Header="VLAN ID" Binding="{Binding VlanId}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

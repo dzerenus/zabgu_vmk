@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="PcapDotNet.Base">
+      <HintPath>..\..\..\..\..\Zabgu_Mashkin_Kursovaya\UDPFlood\WinPcap\PcapDotNet.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="PcapDotNet.Core">
+      <HintPath>..\..\..\..\..\Zabgu_Mashkin_Kursovaya\UDPFlood\WinPcap\PcapDotNet.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PcapDotNet.Core.Extensions">
+      <HintPath>..\..\..\..\..\Zabgu_Mashkin_Kursovaya\UDPFlood\WinPcap\PcapDotNet.Core.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="PcapDotNet.Packets">
+      <HintPath>..\..\..\..\..\Zabgu_Mashkin_Kursovaya\UDPFlood\WinPcap\PcapDotNet.Packets.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
