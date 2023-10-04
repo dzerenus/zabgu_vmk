@@ -179,6 +179,11 @@ export class Ant extends GameObject {
 
     runEnd() {
         this._state = this._prevstate;
+
+        const out = document.getElementById('status-text');
+        if (out != null) {
+            out.innerText = this._state;
+        }
     }
 
     setDirection(d: Direction): void {
