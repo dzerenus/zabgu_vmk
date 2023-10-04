@@ -1,0 +1,10 @@
+.container {
+    margin: auto;
+    text-align: center;
+}
+
+.input-div {
+    margin: 5px auto;
+    width: 300px;
+    text-align: right;
+}

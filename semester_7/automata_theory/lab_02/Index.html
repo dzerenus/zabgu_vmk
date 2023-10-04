@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №2</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h3>Задание: <i>111001011+11</i> в бинарной системе</h3>
+
+        <div class="row-div">
+            <div>---------------</div>
+            <div id="automat-position"></div>
+            <div>---------------</div>
+        </div>
+
+        <div class="input-div">
+            <label for="value1">Слагаемое 1: </label>
+            <input type="text" id="value1" readonly />
+        </div>
+
+        <div class="input-div">
+            <label for="value2">Слагаемое 2: </label>
+            <input type="text" id="value2" readonly />
+        </div>
+
+        <div class="input-div">
+            <label for="result">Результат: </label>
+            <input type="text" id="result" readonly />
+        </div>
+
+        <div class="row-div">---------------</div>
+
+        <div class="input-div">
+            <label for="state">Состояние:</label>
+            <input type="text" id="state" readonly />
+        </div>
+
+        <div class="row-div">---------------</div>
+        
+        <div class="input-div" style="text-align: center;">
+            <input type="button" id="step" value="Сделать шаг"/>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
