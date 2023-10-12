@@ -122,11 +122,10 @@ export class Ant extends GameObject {
     stepToRotate = 10;
     stepToRun = 0;
     
-    get state() { return this._state; }
+    get state() { return this._stateStack[0]; }
     get direction() { return this._direction; }
 
-    private _state: AntState = AntState.LeafFind;
-    private _prevstate: AntState = AntState.LeafFind;
+    private _stateStack: AntState[] = [AntState.LeafFind];
     private _direction: Direction = Direction.Left;
     private _blockedDirection: Direction = Direction.Left;
 
@@ -159,9 +158,8 @@ export class Ant extends GameObject {
     }
 
     setStatus(s: AntState): void {
-        if (s !== this._state) {
-            this._prevstate = this._state;
-            this._state = s;
+        if (s !== this._stateStack[0]) {
+            this._stateStack.unshift(s);
         }
         
 
@@ -178,11 +176,11 @@ export class Ant extends GameObject {
     }
 
     runEnd() {
-        this._state = this._prevstate;
+        this._stateStack = this._stateStack.slice(1);
 
         const out = document.getElementById('status-text');
         if (out != null) {
-            out.innerText = this._state;
+            out.innerText = this._stateStack[0];
         }
     }
 

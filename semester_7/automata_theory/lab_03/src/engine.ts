@@ -153,7 +153,7 @@ function doNextStep() {
         }
 
         if (dangers.some(go => go.isCollision(ant))) {
-            console.log('МУРАВЕЙ УМЕР УРААА!!!');
+            console.log('МУРАВЕЙ УМЕР!!!');
             alert(AntState.Death);
         }
 
@@ -168,9 +168,6 @@ function doNextStep() {
             }
 
         }
-
-        
-
 
         const step = ant.getNextPosition();
         const collisionGo = gameObjects.find(go => !(go instanceof FieldOfVision) && go.isVectorCollision(step));
@@ -210,7 +207,7 @@ function doNextStep() {
             const home = gameObjects.find(x => x instanceof Home) as Home;
 
             if (collisionGo instanceof Wall) {
-                timeout = getRandomInt(30) + 15;
+                timeout = getRandomInt(15) + 15;
             }
 
             if (timeout <= 0) {
