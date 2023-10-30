@@ -1,0 +1,36 @@
+html body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1000px;
+    height: 100vh;
+    margin: auto;
+    background-color: blanchedalmond;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    padding-top: 20px;
+}
+
+.lamp {
+    height: 100px;
+    width: 100px;
+    border-radius: 50px;
+}
+
+#lamp-r { background-color: red; }
+#lamp-y { background-color: yellow; }
+#lamp-g { background-color: green; }
+
+.off {
+    background-color: white !important;
+}

@@ -1,0 +1,42 @@
+.container {
+    height: 100vh;
+    background-color: darkgrey;
+    width: 1000px;
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+
+html body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.title {
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#state {
+    font-size: 72px;
+    font-weight: bold;
+}
+
+span {
+    height: 20px;
+    border: 1px dashed black;
+    flex-grow: 1;
+    min-width: 100px;
+    max-width: 100px;
+    overflow: hidden;
+}
+
+.line {
+    width: 300px;
+    display: flex;
+}
