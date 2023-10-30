@@ -1,0 +1,54 @@
+html, body {
+    margin: 0;
+}
+
+.container {
+    width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 30px;
+    align-items: center;
+    font-size: 16px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 1200px;
+    background-color: lightcoral;
+    z-index: -1;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+#table {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+}
+
+.number {
+    padding: 5px;
+    width: 30px;
+    border: 1px solid black;
+}
+
+.result {
+    padding: 5px;
+    border: 1px solid black;
+    width: 400px;
+    min-width: 400px;
+    max-width: 400px;
+    overflow: hidden;
+}
