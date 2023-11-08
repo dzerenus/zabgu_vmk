@@ -1,0 +1,26 @@
+body {
+    margin: 0px;
+}
+
+.container {
+    width: 1000px;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    height: 100vh;
+    margin: auto;
+    align-items: center;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
