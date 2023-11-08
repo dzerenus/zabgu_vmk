@@ -1,0 +1,50 @@
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 1000px;
+    background-color: lightgray;
+    margin: auto;
+    align-items: center;
+    gap: 50px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 50px;
+}
+
+.road {
+    height: 100px;
+    width: calc(100% - 20px);
+    background-color: gray;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    gap: 10px;
+}
+
+.slot {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.slot > div {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 15px;
+    border: solid black 1px;
+}
+
+.road-slot {
+    flex-grow: 1;
+    border: 1px solid black;
+}
+
+body {
+    margin: 0;
+}
