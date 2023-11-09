@@ -29,15 +29,16 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 25px;
 }
 
 .slot > div {
     flex-grow: 1;
     text-align: center;
     font-weight: bold;
-    padding-top: 15px;
+    padding-top: 8px;
     border: solid black 1px;
+    background-color: gray;
 }
 
 .road-slot {

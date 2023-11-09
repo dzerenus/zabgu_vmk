@@ -4,33 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторная работа №2</title>
-    <link rel="stylesheet" href="./style.css"/>
+    <title>Афинные Шифры</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
     <div class="container">
-        <div class="title">Лабораторная работа №2</div>
+        <div></div>
 
-        <div class="block">
-            <div class="title">Шифрование</div>
-            <div>
-                <input id="enc-inp" placeholder="Данные"/>
-                <input id="enc-key" placeholder="Ключ"/>
-            </div>
-            <input id="enc-but" type="button" value="Зашифровать">
-            <input id="enc-res" placeholder="Результат" readonly>
+        <div style="text-align: center;">
+            <div class="title">Афинные Шифры</div>
+            <div><i>Вариант №3</i></div>
         </div>
 
-        <div class="block">
-            <div class="title">Расшифрование</div>
-            <div>
-                <input id="dec-inp" placeholder="Данные"/>
-                <input id="dec-key" placeholder="Ключ"/>
-            </div>
-            <input id="dec-but" type="button" value="Расшифровать">
-            <input id="dec-res" placeholder="Результат" readonly>
+        <div>
+            Введите <b>A</b>:
+            <input id="a_input" type="number" value="1" min="1"/>
+            Введите <b>B</b>:
+            <input id="b_input" type="number" value="0" min="0"/>
         </div>
+
+        <code>[О, И, У, Ы, Н, Т, К, _]</code>
+
+        <input id="data_input" placeholder="Введите строку"/>
+        <div>
+            <input id="enc_button" type="button" value="Зашифровать"/>
+            <input id="dec_button" type="button" value="Расшифровать"/>
+        </div>
+        <input style="width: 400px;" id="result_input" placeholder="Результат" readonly/>
     </div>
     <script src="./script.js"></script>
 </body>
