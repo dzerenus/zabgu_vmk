@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шифр Виженера</title>
+    <link rel="stylesheet" href="./style.css"/>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">Шифр Виженера</div>
+
+        <div class="block">
+            <div class="title">Шифрование</div>
+            <div>
+                <input id="enc-inp" placeholder="Данные"/>
+                <input id="enc-key" placeholder="Ключ"/>
+            </div>
+            <input id="enc-but" type="button" value="Зашифровать">
+            <input id="enc-res" placeholder="Результат" readonly>
+        </div>
+
+        <div class="block">
+            <div class="title">Расшифрование</div>
+            <div>
+                <input id="dec-inp" placeholder="Данные"/>
+                <input id="dec-key" placeholder="Ключ"/>
+            </div>
+            <input id="dec-but" type="button" value="Расшифровать">
+            <input id="dec-res" placeholder="Результат" readonly>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+
+</html>

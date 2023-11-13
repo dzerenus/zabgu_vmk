@@ -1,70 +1,71 @@
-var symbols = [
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-    's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' ',
-    'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з',
-    'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р',
-    'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ',
-    'ъ', 'ы', 'ь', 'э', 'ю', 'я', '1', '2', '3',
-    '4', '5', '6', '7', '8', '9', '0', ',', '.',
-    '!', '?', ':', ';', '"', "'",
-];
-var table = [];
-function createOffsetedArray(array, offset) {
-    var result = [];
-    for (var i = 0; i < array.length; i++) {
-        var index = (i + offset) % array.length;
-        result.push(array[index]);
+var alphabet = ['О', 'И', 'У', 'Ы', 'Н', 'Т', 'К', '_'];
+function getGCD(a, b) {
+    var g = a >= b ? a : b;
+    var s = a < b ? a : b;
+    if (g % s === 0) {
+        return s;
     }
-    return result;
-}
-document.getElementById('enc-but').onclick = function () {
-    var data = document.getElementById('enc-inp').value.toLowerCase();
-    var key = document.getElementById('enc-key').value.toLowerCase();
-    var result = [];
-    var keyIndex = 0;
-    for (var i = 0; i < data.length; i++) {
-        var defIndex = symbols.indexOf(data[i]);
-        var keySymbolIndex = symbols.indexOf(key[keyIndex]);
-        if (defIndex == null) {
-            result.push(data[i]);
-            continue;
-        }
-        if (keySymbolIndex == 0) {
-            keySymbolIndex = 0;
-        }
-        keyIndex = (keyIndex + 1) % key.length;
-        result.push(table[defIndex][keySymbolIndex]);
-    }
-    document.getElementById('enc-res').value = result.join('');
-};
-document.getElementById('dec-but').onclick = function () {
-    var data = document.getElementById('dec-inp').value.toLowerCase();
-    var key = document.getElementById('dec-key').value.toLowerCase();
-    var result = [];
-    var keyIndex = 0;
-    for (var i = 0; i < data.length; i++) {
-        var defIndex = symbols.indexOf(data[i]);
-        var keySymbolIndex = symbols.indexOf(key[keyIndex]);
-        if (defIndex == null) {
-            result.push(data[i]);
-            continue;
-        }
-        if (keySymbolIndex == 0) {
-            keySymbolIndex = 0;
-        }
-        keyIndex = (keyIndex + 1) % key.length;
-        var row = table[keySymbolIndex];
-        var sIndex = row.indexOf(data[i]);
-        if (sIndex < 0) {
-            result.push(symbols[i]);
+    while (g !== 0 && s !== 0) {
+        if (g > s) {
+            g %= s;
         }
         else {
-            result.push(table[0][sIndex]);
+            s %= g;
         }
     }
-    document.getElementById('dec-res').value = result.join('');
-};
-for (var symbolIndex = 0; symbolIndex < symbols.length; symbolIndex++) {
-    table.push(createOffsetedArray(symbols, symbolIndex));
+    return g + s;
 }
+function getReverse(a, n) {
+    var res = 1;
+    while (true) {
+        if ((a * res) % n === 1) {
+            return res;
+        }
+        else {
+            res++;
+        }
+    }
+}
+document.getElementById('enc_button').onclick = function () {
+    var a = Math.floor(Number(document.getElementById('a_input').value));
+    var b = Math.floor(Number(document.getElementById('b_input').value));
+    var gcd = getGCD(a, alphabet.length);
+    if (gcd !== 1) {
+        document.getElementById('result_input').value = 'Неверное число A';
+        return;
+    }
+    var input = document.getElementById('data_input').value.toUpperCase();
+    var result = [];
+    for (var i = 0; i < input.length; i++) {
+        var s = input[i];
+        var index = alphabet.indexOf(s);
+        if (index < 0) {
+            result.push(s);
+            continue;
+        }
+        var y = (a * index + b) % alphabet.length;
+        result.push(alphabet[y]);
+    }
+    document.getElementById('result_input').value = result.join('');
+};
+document.getElementById('dec_button').onclick = function () {
+    var a = Math.floor(Number(document.getElementById('a_input').value));
+    var b = Math.floor(Number(document.getElementById('b_input').value));
+    var input = document.getElementById('data_input').value.toUpperCase();
+    var reverse = getReverse(a, alphabet.length);
+    var result = [];
+    for (var i = 0; i < input.length; i++) {
+        var s = input[i];
+        var index = alphabet.indexOf(s);
+        if (index < 0) {
+            result.push(s);
+            continue;
+        }
+        var x = ((index - b) * reverse) % alphabet.length;
+        while (x < 0) {
+            x += alphabet.length;
+        }
+        result.push(alphabet[x]);
+    }
+    document.getElementById('result_input').value = result.join('');
+};

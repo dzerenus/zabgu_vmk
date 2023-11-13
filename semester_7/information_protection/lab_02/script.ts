@@ -1,94 +1,91 @@
-const symbols = [
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-    's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' ',
-    'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з',
-    'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р',
-    'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ',
-    'ъ', 'ы', 'ь', 'э', 'ю', 'я', '1', '2', '3',
-    '4', '5', '6', '7', '8', '9', '0', ',', '.',
-    '!', '?', ':', ';', '"', "'",
-];
+const alphabet = ['О', 'И', 'У', 'Ы', 'Н', 'Т', 'К', '_'];
 
-const table: string[][] = [];
+function getGCD(a: number, b: number) {
+    let g = a >= b ? a : b;
+    let s = a < b ? a : b;
 
-function createOffsetedArray<T>(array: T[], offset: number) {
-    const result: T[] = [];
-
-    for (let i = 0; i < array.length; i++) {
-        const index = (i + offset) % array.length;
-        result.push(array[index]);
+    if (g % s === 0) {
+        return s;
     }
 
-    return result;
-}
-
-document.getElementById('enc-but')!.onclick = () => {
-    const data = (document.getElementById('enc-inp') as HTMLInputElement).value.toLowerCase();
-    const key = (document.getElementById('enc-key') as HTMLInputElement).value.toLowerCase();
-
-    const result: string[] = [];
-
-    let keyIndex = 0;
-    for (let i = 0; i < data.length; i++) {
-        const defIndex = symbols.indexOf(data[i]);
-        let keySymbolIndex = symbols.indexOf(key[keyIndex]);
-
-        if (defIndex == null) {
-            result.push(data[i]);
-            continue;
-        }
-
-        if (keySymbolIndex == 0) {
-            keySymbolIndex = 0;
-        }
-
-        keyIndex = (keyIndex + 1) % key.length;
-
-        result.push(table[defIndex][keySymbolIndex]);
-    }
-
-    (document.getElementById('enc-res') as HTMLInputElement).value = result.join('');
-    
-};
-
-document.getElementById('dec-but')!.onclick = () => {
-    const data = (document.getElementById('dec-inp') as HTMLInputElement).value.toLowerCase();
-    const key = (document.getElementById('dec-key') as HTMLInputElement).value.toLowerCase();
-
-    const result: string[] = [];
-
-    let keyIndex = 0;
-    for (let i = 0; i < data.length; i++) {
-        const defIndex = symbols.indexOf(data[i]);
-        let keySymbolIndex = symbols.indexOf(key[keyIndex]);
-
-        if (defIndex == null) {
-            result.push(data[i]);
-            continue;
-        }
-
-        if (keySymbolIndex == 0) {
-            keySymbolIndex = 0;
-        }
-
-        keyIndex = (keyIndex + 1) % key.length;
-
-        const row = table[keySymbolIndex];
-        const sIndex = row.indexOf(data[i]);
-
-        if (sIndex < 0) {
-            result.push(symbols[i]);
+    while (g !== 0 && s !== 0) {
+        if (g > s) {
+            g %= s;
         } else {
-            result.push(table[0][sIndex]);
+            s %= g;
         }
-
     }
 
-    (document.getElementById('dec-res') as HTMLInputElement).value = result.join('');
-    
+    return g + s;
+}
+
+function getReverse(a: number, n: number) {
+    let res = 1;
+
+    while (true) {
+        if ((a * res) % n === 1) {
+            return res;
+        } else {
+            res++;
+        }
+    }
+}
+
+document.getElementById('enc_button')!.onclick = () => {
+    const a = Math.floor(Number((document.getElementById('a_input') as HTMLInputElement).value));
+    const b = Math.floor(Number((document.getElementById('b_input') as HTMLInputElement).value));
+    const gcd = getGCD(a, alphabet.length);
+
+    if (gcd !== 1) {
+        (document.getElementById('result_input') as HTMLInputElement).value = 'Неверное число A';
+        return;
+    }
+
+    const input = (document.getElementById('data_input') as HTMLInputElement).value.toUpperCase();
+
+    const result: string[] = [];
+    for (let i = 0; i < input.length; i++) {
+        const s = input[i];
+        
+        const index = alphabet.indexOf(s);
+
+        if (index < 0) {
+            result.push(s);
+            continue;
+        }
+
+        const y = (a * index + b) % alphabet.length; 
+        result.push(alphabet[y]);
+    }
+
+    (document.getElementById('result_input') as HTMLInputElement).value = result.join('');
 };
 
-for (let symbolIndex = 0; symbolIndex < symbols.length; symbolIndex++) {
-    table.push(createOffsetedArray(symbols, symbolIndex));
-}
+document.getElementById('dec_button')!.onclick = () => {
+    const a = Math.floor(Number((document.getElementById('a_input') as HTMLInputElement).value));
+    const b = Math.floor(Number((document.getElementById('b_input') as HTMLInputElement).value));
+
+    const input = (document.getElementById('data_input') as HTMLInputElement).value.toUpperCase();
+    const reverse = getReverse(a, alphabet.length);
+
+    const result: string[] = [];
+    for (let i = 0; i < input.length; i++) {
+        const s = input[i];
+        
+        const index = alphabet.indexOf(s);
+
+        if (index < 0) {
+            result.push(s);
+            continue;
+        }
+
+        let x = ((index - b) * reverse) % alphabet.length; 
+        while (x < 0) {
+            x += alphabet.length;
+        }
+        
+        result.push(alphabet[x]);
+    }
+
+    (document.getElementById('result_input') as HTMLInputElement).value = result.join('');
+};
