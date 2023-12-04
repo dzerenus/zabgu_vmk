@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модель Лотки-Вольтерра</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">Модель Лотки-Вольтерра</div>
+        <div class="params">
+            <div>
+                <label for="r-value">Скорость роста жертв при отсутствии хищников:</label>
+                <input id="r-value" value="0.21">
+            </div>
+
+            <div>
+                <label for="a-value">Скорость охоты хищников на жертв:</label>
+                <input id="a-value" value="0.01">
+            </div>
+
+            <div>
+                <label for="b-value">Скорость потребления хищниками добычи:</label>
+                <input id="b-value" value="0.25">
+            </div>
+
+            <div>
+                <label for="m-value">Скорость роста хищников при наличии пищи:</label>
+                <input id="m-value" value="0.0112">
+            </div>
+
+            <div>
+                <label for="t-value">Скорость симуляции (мс. между тактами):</label>
+                <input id="t-value" value="20">
+            </div>
+
+            <div>
+                <label for="dt-value">Время симуляции между тактами:</label>
+                <input id="dt-value" value="5">
+            </div>
+
+            <div>
+                <input type="button" id="accept-button" value="Начать" />
+                <input type="button" id="stop-button" value="Остановить" />
+            </div>
+
+        </div>
+        
+        <hr>
+
+        <div>
+            <div class="micro-title">Кол-во особей</div>
+            <div class="count-animals">
+                <div id="j-count">0</div>
+                <div id="h-count">0</div>
+            </div>
+        </div>
+
+        <canvas id="canvas" height="400" width="900"></canvas>
+        <div>
+            <label for="c-value">Пикселей/Ед.Данных:</label>
+            <input id="c-value" type="number" step="1" value="3">
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>
