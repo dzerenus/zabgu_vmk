@@ -1,47 +1,49 @@
-﻿static int Inv(int a, int n)
+﻿using System.Numerics;
+
+static int Inv(int a, int n)
 {
     if (a % n == 0)
-        return 0;
-
-    var aInv = 1;
-
-    while (true)
+        throw new ArgumentException("Обратного к числу нет");
+    else
     {
-        if (aInv * a % n == 1)
-            return aInv;
-
-        aInv++;
+        int result = 1;
+        while (true)
+        {
+            if ((result * a) % n == 1)
+                return result;
+            result++;
+        }
     }
 }
 
 static int Phi(int n)
 {
-    var s = 0;
-    
-    for (int i = 0; i < n; i++)
-        if (Gcd(n, i) == 1)
-            s++;
+    int result = 0;
 
-    return s;
+    for (int i = 0; i <= n; i++)
+        if (Gcd(i, n) == 1)
+            result++;
+
+    return result;
 }
 
 static int Gcd(int a, int b)
 {
-    while (a != 0 && b != 0)
+    while (b != 0)
     {
-        if (a > b)
-            a %= b;
-        else
-            b %= a;
+        var temp = b;
+        b = a % b;
+        a = temp;
     }
 
-    return a | b;
+    return a;
 }
 
 static ((int, int), (int, int)) GenPkSk(int p, int q)
 {
     var n = p * q;
     var ph = Phi(n);
+    var rnd = new Random();
     var e = 23;
     var d = Inv(e, ph);
     var pk = (e, n);
@@ -54,7 +56,7 @@ static int Chifering(int m, ((int, int), (int, int)) keys)
     var pk = keys.Item1;
     var e = pk.Item1;
     var n = pk.Item2;
-    return ((int)Math.Floor(Math.Pow(m, e))) % n;
+    return (int)(Power(m, e) % n);
 }
 
 static int Dechifering(int c, ((int, int), (int, int)) keys)
@@ -63,7 +65,17 @@ static int Dechifering(int c, ((int, int), (int, int)) keys)
     var sk = keys.Item2;
     var n = pk.Item2;
     var d = sk.Item1;
-    return ((int)Math.Floor(Math.Pow(c, d))) % n;
+    return (int)(Power(c, d) % n);
+}
+
+static BigInteger Power(int num, int power)
+{
+    var result = BigInteger.One;
+
+    for (int i = 1; i <= power; i++)
+        result *= num;
+
+    return result;
 }
 
 var keys = GenPkSk(13, 17);
