@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+}
+
+textarea {
+    width: 800px;
+    height: 300px;
+}
+
+.container {
+    width: 1000px;
+    height: 100vh;
+    background-color: bisque;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 20px;
+}
