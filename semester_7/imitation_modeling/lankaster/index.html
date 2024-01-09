@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модель Ланкастера</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">Модель Ланкастера</div>
+        <div class="params">
+            <div>
+                <label for="x-value">Начальное X:</label>
+                <input id="x-value" value="200">
+            </div>
+
+            <div>
+                <label for="y-value">Начальное Y:</label>
+                <input id="y-value" value="150">
+            </div>
+
+            <div>
+                <label for="a-value">Мощность оружия A:</label>
+                <input id="a-value" value="0.002">
+            </div>
+
+            <div>
+                <label for="b-value">Мощность оружия B:</label>
+                <input id="b-value" value="0.003">
+            </div>
+
+            <div>
+                <label for="t-value">Скорость симуляции (мс. между тактами):</label>
+                <input id="t-value" value="1">
+            </div>
+
+            <div>
+                <label for="dt-value">Время симуляции между тактами:</label>
+                <input id="dt-value" value="5">
+            </div>
+
+            <div>
+                <input type="button" id="accept-button" value="Начать" />
+                <input type="button" id="stop-button" value="Остановить" />
+            </div>
+
+        </div>
+        
+        <hr>
+
+        <div>
+            <div class="micro-title">Армии</div>
+            <div class="count-animals">
+                <div id="x-count">0</div>
+                <div id="y-count">0</div>
+            </div>
+        </div>
+
+        <canvas id="canvas" height="400" width="900"></canvas>
+        <div>
+            <label for="c-value">Пикселей/Ед.Данных:</label>
+            <input id="c-value" type="number" step="1" value="3">
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>
