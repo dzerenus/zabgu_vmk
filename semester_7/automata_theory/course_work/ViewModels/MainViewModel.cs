@@ -58,10 +58,8 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public ICommand InitializeFieldCommand
-    {
-        get => new CommandHandler(InitializeField);
-    }
+    public ICommand InitializeFieldCommand => new CommandHandler(InitializeField);
+    public ICommand StartGameCommand => new CommandHandler(_game.Start);
 
     private int _snakeCount = 10;
     private int _fieldSizeY = 50;
@@ -82,6 +80,11 @@ public class MainViewModel : INotifyPropertyChanged
     {
         var parameters = new GameParameters(new Vector2D(_fieldSizeX, _fieldSizeY), 1, 1, 1, _snakeCount);
         _game.Initialize(parameters);
+    }
+
+    public void StopGame()
+    {
+        _game.Stop();
     }
 
     public void OnPropertyChanged(string prop)

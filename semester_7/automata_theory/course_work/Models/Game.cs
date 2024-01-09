@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,9 +7,6 @@ namespace SnakeGen.Models;
 
 public sealed class Game
 {
-    /// <summary> Размер одной клетки в пикселях. </summary>
-    public const int CellSize = 10;
-
     /// <summary> Запущена ли игра. </summary>
     public bool IsStarted { get; private set; } = false;
 
@@ -68,7 +66,7 @@ public sealed class Game
 
     private async Task GameCycle()
     {
-        if (_field == null || _parameters == null || IsStarted)
+        if (_field == null || _parameters == null || !IsStarted)
             throw new InvalidOperationException("Неверная стартовая конфигурация.");
 
         var delay = (int)(20 * _parameters.TimeMultiplier);
