@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модель Лесли</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">Модель Лесли</div>
+        <div class="params">
+            <div>
+                <label for="count-value">Кол-во особей в группах:</label>
+                <input id="count-value" value="100 50 25 10">
+            </div>
+
+            <div>
+                <label for="s-value">S групп:</label>
+                <input id="s-value" value="0.2 0.7 0.5 0">
+            </div>
+
+            <div>
+                <label for="f-value">F групп:</label>
+                <input id="f-value" value="0 2 1 0">
+            </div>
+
+            <div>
+                <label for="t-value">Скорость симуляции (мс. между тактами):</label>
+                <input id="t-value" value="30">
+            </div>
+
+            <div>
+                <input type="button" id="accept-button" value="Вычислить" />
+            </div>
+
+        </div>
+        
+        <hr>
+
+        <canvas id="canvas" height="400" width="900"></canvas>
+        <div>
+            <label for="c-value">Пикселей/Ед.Данных:</label>
+            <input id="c-value" type="number" step="1" value="90">
+        </div>
+    </div>
+
+    <script src="./math.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
