@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+}
+
+hr {
+    width: 100%;
+}
+
+canvas {
+    background-color: white;
+    border-radius: 6px;
+}
+
+.container {
+    width: 1000px;
+    background-color: bisque;
+    margin: auto;
+    display: flex;
+    gap: 20px;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.params {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.micro-title {
+    font-weight: bold;
+}
+
+.count-animals {
+    display: flex;
+    gap: 20px;
+    font-weight: bold;
+    justify-content: center;
+    text-align: center;
+}
+
+#j-count {
+    color: darkgreen;
+}
+
+#h-count {
+    color: darkred;
+}

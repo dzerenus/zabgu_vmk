@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="SnakeGen.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SnakeGen"
+    xmlns:skiasharp="using:SkiaSharp.Views.Windows"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Closed="Window_Closed">
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="200px" />
+        </Grid.ColumnDefinitions>
+
+        <skiasharp:SKXamlCanvas 
+            Grid.Column="0" 
+            Margin="0 0 5 0" 
+            x:Name="canvas"
+            PaintSurface="PaintSurfaceHandle"/>
+
+        <StackPanel Grid.Column="1" Margin="5 0 0 0" Spacing="10">
+            <TextBlock TextAlignment="Center" FontSize="24" FontWeight="Bold">Snak0cide</TextBlock>
+
+            <StackPanel Spacing="5">
+                <TextBlock FontSize="18" TextAlignment="Center" FontWeight="Bold">Размер поля</TextBlock>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20px"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Margin="0 0 5 0" FontSize="18" TextAlignment="Right" VerticalAlignment="Center">X:</TextBlock>
+                    <TextBox Grid.Column="1" Text="{x:Bind ViewModel.FieldSizeX, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20px"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Margin="0 0 5 0" FontSize="18" TextAlignment="Right" VerticalAlignment="Center">Y:</TextBlock>
+                    <TextBox Grid.Column="1" Text="{x:Bind ViewModel.FieldSizeY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock FontSize="18" TextAlignment="Center" FontWeight="Bold">Количество змеек</TextBlock>
+                <TextBox Grid.Column="1" Text="{x:Bind ViewModel.SnakeCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <Button Content="Создать поле" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.InitializeFieldCommand}"/>
+            <Button Content="Начать" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.StartGameCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

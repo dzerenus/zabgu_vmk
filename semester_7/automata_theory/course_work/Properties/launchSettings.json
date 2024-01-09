@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SnakeGen (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SnakeGen (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
