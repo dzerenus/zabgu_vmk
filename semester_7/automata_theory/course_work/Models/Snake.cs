@@ -27,7 +27,6 @@ public class Snake
 
     private Direction _direction = Direction.Up;
 
-
     private readonly Vector2D _fieldSize;
 
     public Snake(Vector2D fieldSize)
@@ -40,7 +39,7 @@ public class Snake
     {
         var rnd = new Random();
 
-        if (rnd.Next(10) > 7)
+        if (rnd.Next(10) > 8)
         {
             var direction = rnd.Next(4);
             if (direction == 0) _direction = Direction.Up;
