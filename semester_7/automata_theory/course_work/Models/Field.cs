@@ -10,7 +10,8 @@ namespace SnakeGen.Models;
 /// </summary>
 public class Field
 {
-    private static double WallCount = 0.01;  // Примерный процент клеток поля, которые будут стенами.
+    private const double FoodCount = 0.01;  // Примерный процент клеток поля, занятых едой.
+    private const double WallCount = 0.00;  // Примерный процент клеток поля, которые будут стенами.
     private const int MinWallLength = 2;    // Минимальная длина стенки. 
     private const int MaxWallLength = 12;    // Максимальная длина стенки.
 
@@ -18,12 +19,15 @@ public class Field
 
     private List<Snake> _gameObjects;
     private readonly IEnumerable<ICell> _staticCells;
+    private readonly List<ICell> _cells = new List<ICell>();
+    private readonly int _foodCellCount;
 
     public Field(FieldParameters parameters)
     {
         Parameters = parameters;
         _staticCells = CreateWalls();
         _gameObjects = new();
+        _foodCellCount = (int) (Parameters.Size.X * Parameters.Size.Y * FoodCount);
 
         var random = new Random();
 
@@ -38,6 +42,16 @@ public class Field
                 _gameObjects.Add(snake);
             }
         }
+
+        var fieldCells = GetCells();
+        var freePositions = GetFreeVectors(fieldCells).ToList();
+
+        for (int i = 0; i < _foodCellCount; i++)
+        {
+            var vector = freePositions[random.Next(freePositions.Count)];
+            _cells.Add(new FoodCell(vector));
+            freePositions.Remove(vector);
+        }
     }
 
     public IEnumerable<ICell> GetCells()
@@ -48,6 +62,7 @@ public class Field
             cells.AddRange(go.GetCells());
 
         cells.AddRange(_staticCells);
+        cells.AddRange(_cells);
         return cells;
     }
 
@@ -55,6 +70,7 @@ public class Field
     {
         var cells = new List<ICell>();
         cells.AddRange(_staticCells);
+        cells.AddRange(_cells);
 
         var collidedSnakes = new List<Snake>();
 
@@ -113,5 +129,21 @@ public class Field
         }
 
         return cells;
+    }
+
+    private IEnumerable<Vector2D> GetFreeVectors(IEnumerable<ICell> cells)
+    {
+        var allCells = new List<Vector2D>();
+
+        for (int x = 0; x < Parameters.Size.X; x++)
+            for (int y = 0; y < Parameters.Size.Y; y++)
+            {
+                var vector = new Vector2D(x, y);
+                
+                if (!cells.Any(x => x.Position == vector))
+                    allCells.Add(vector);
+            }
+
+        return allCells;
     }
 }
