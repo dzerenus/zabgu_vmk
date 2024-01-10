@@ -19,4 +19,27 @@ public class Vector2D
         X = vector.X;
         Y = vector.Y;
     }
+
+    public static bool operator ==(Vector2D v1, Vector2D v2)
+    {
+        return v1.X == v2.X && v1.Y == v2.Y;
+    }
+
+    public static bool operator !=(Vector2D v1, Vector2D v2)
+    {
+        return !(v1 == v2);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj == null || obj is not Vector2D vector)
+            return false;
+
+        return this == vector;
+    }
+
+    public override int GetHashCode()
+    {
+        return X * 10000 + Y;
+    }
 }

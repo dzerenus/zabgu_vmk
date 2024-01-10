@@ -19,23 +19,43 @@ public enum Direction
 /// </summary>
 public class Snake
 {
+    /// <summary>
+    /// ID змеи.
+    /// </summary>
     public Guid Id { get; } = Guid.NewGuid(); 
-
+    
+    /// <summary>
+    /// Цвет змеи.
+    /// </summary>
     public string Color { get; } = "#ef5749";
 
+    /// <summary>
+    /// Позиция головы змеи.
+    /// </summary>
     public Vector2D Position { get; private set; }
+
 
     private Direction _direction = Direction.Up;
 
     private readonly Vector2D _fieldSize;
 
-    public Snake(Vector2D fieldSize)
+    private readonly List<ICell> _body;
+
+    public Snake(Vector2D position, Vector2D fieldSize)
     {
         _fieldSize = fieldSize;
-        Position = new Vector2D(fieldSize.X / 2, fieldSize.Y / 2);
+        Position = position;
+
+        _body = new List<ICell>()
+        {
+            new SnakeCell(this) { Position = new Vector2D(Position) },
+            new SnakeCell(this) { Position = new Vector2D(Position) { Y = Position.Y + 1 }},
+            new SnakeCell(this) { Position = new Vector2D(Position) { Y = Position.Y + 2 }},
+            new SnakeCell(this) { Position = new Vector2D(Position) { Y = Position.Y + 3 }},
+        };
     }
 
-    public IEnumerable<SnakeCell> Tick()
+    public IEnumerable<ICell> Tick()
     {
         var rnd = new Random();
 
@@ -49,8 +69,17 @@ public class Snake
         }
 
         var newPosition = GetNextPosition();
+
+        _body.RemoveAt(_body.Count - 1);
+        _body.Insert(0, new SnakeCell(this) { Position = newPosition });
+
         Position = newPosition;
-        return new List<SnakeCell>() { new SnakeCell(this) };
+        return GetCells();
+    }
+
+    public IEnumerable<ICell> GetCells()
+    {
+        return _body;
     }
 
     private Vector2D GetNextPosition()

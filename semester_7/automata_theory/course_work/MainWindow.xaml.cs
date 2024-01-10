@@ -13,6 +13,8 @@ public sealed partial class MainWindow : Window
 
     private FieldData? _prevFieldData;
 
+    private readonly SKPaint _paint = new SKPaint { Color = SKColors.Black };
+
     public MainWindow()
     {
         InitializeComponent();
@@ -68,14 +70,9 @@ public sealed partial class MainWindow : Window
 
         foreach (var cell in _prevFieldData.Cells)
         {
-            var p1 = new SKPoint(fieldStartX + cell.Position.X * cellSize, fieldStartY + cell.Position.Y * cellSize);
-
-            paint = new SKPaint
-            {
-                Color = SKColor.Parse(cell.Color),
-            };
-
-            canvas.DrawRect(p1.X, p1.Y, cellSize, cellSize, paint);
+            var position = new SKPoint(fieldStartX + cell.Position.X * cellSize, fieldStartY + cell.Position.Y * cellSize);
+            _paint.Color = SKColor.Parse(cell.Color);
+            canvas.DrawRect(position.X, position.Y, cellSize, cellSize, _paint);
         }
     }
 

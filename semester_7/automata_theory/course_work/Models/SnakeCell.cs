@@ -6,7 +6,7 @@ public class SnakeCell : ICell
 {
     public Guid SnakeId { get; }
 
-    public Vector2D Position { get; }
+    public Vector2D Position { get; init; }
 
     public string Color { get; }
 
