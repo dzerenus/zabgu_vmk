@@ -39,7 +39,7 @@ public sealed class Game
         _field = new Field(parameters);
         _parameters = parameters;
 
-        OnFieldChanged?.Invoke(new FieldData(_field, _field.GetCells()));
+        OnFieldChanged?.Invoke(_field.Tick());
     }
 
     public void Start()

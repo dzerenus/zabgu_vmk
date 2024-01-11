@@ -42,7 +42,7 @@ public sealed partial class MainWindow : Window
             StrokeWidth = 1,
         };
 
-        var cellSize = 15;
+        var cellSize = 12;
         var sizeY = _prevFieldData.Parameters.Size.Y;
         var sizeX = _prevFieldData.Parameters.Size.X;
         var fieldSizeY = cellSize * sizeY;

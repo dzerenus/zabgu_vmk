@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SnakeGen.Models;
 
-public enum Direction
+public enum SnakeDirection
 {
     Up = 'U',
     Down = 'D',
     Left = 'L',
     Right = 'R'
+}
+
+public enum ColisionStatus
+{
+    Lose,
+    None,
+    Win
 }
 
 /// <summary>
@@ -26,73 +34,106 @@ public class Snake
     /// </summary>
     public string Color { get; } = "#ef5749";
 
-    /// <summary>
-    /// Позиция головы змеи.
-    /// </summary>
-    public Vector2D Position { get; private set; }
+    private SnakeDirection _direction = SnakeDirection.Up;
 
-
-    private Direction _direction = Direction.Up;
-
+    private readonly Brain _brain = new();
+    private readonly List<Vector2D> _body;
     private readonly Vector2D _fieldSize;
-
-    private readonly List<ICell> _body;
+    private readonly Random _random;
 
     public Snake(Vector2D position, Vector2D fieldSize)
     {
+        _random = new Random();
         _fieldSize = fieldSize;
-        Position = position;
-
-        _body = new List<ICell>()
+        _body = new List<Vector2D>()
         {
-            new SnakeCell(this) { Position = new Vector2D(Position) },
-            new SnakeCell(this) { Position = new Vector2D(Position) { Y = Position.Y + 1 }},
-            new SnakeCell(this) { Position = new Vector2D(Position) { Y = Position.Y + 2 }},
-            new SnakeCell(this) { Position = new Vector2D(Position) { Y = Position.Y + 3 }},
+            new (position),
+            new (position) { Y = (position.Y + 1) % _fieldSize.Y },
+            new (position) { Y = (position.Y + 2) % _fieldSize.Y },
+            new (position) { Y = (position.Y + 3) % _fieldSize.Y },
         };
     }
 
-    public IEnumerable<ICell> Tick()
+    public void Tick(IEnumerable<ICell> cells)
     {
-        var rnd = new Random();
-
-        if (rnd.Next(10) > 8)
-        {
-            var direction = rnd.Next(4);
-            if (direction == 0) _direction = Direction.Up;
-            if (direction == 1) _direction = Direction.Down;
-            if (direction == 2) _direction = Direction.Left;
-            if (direction == 3) _direction = Direction.Right;
-        }
-
-        var newPosition = GetNextPosition();
+        var newDirection = _brain.GetDirection(_body[0], cells);
+        
+        if (newDirection != null)
+            _direction = newDirection.Value;
 
         _body.RemoveAt(_body.Count - 1);
-        _body.Insert(0, new SnakeCell(this) { Position = newPosition });
-
-        Position = newPosition;
-        return GetCells();
+        _body.Insert(0, GetNextPosition());
     }
 
-    public IEnumerable<ICell> GetCells()
+    public IEnumerable<SnakeCell> GetCells()
     {
-        return _body;
+        return _body.Select((x, i) => new SnakeCell(this, x, i == 0));
+    }
+
+    public ColisionStatus CheckColision(ICell cell)
+    {
+        var head = _body[0];
+
+        if (head != cell.Position)
+            return ColisionStatus.None;
+
+        if (cell is WallCell)
+            return ColisionStatus.Lose;
+
+        if (cell is SnakeCell snakeCell)
+        {
+            if (snakeCell.IsHead && snakeCell.SnakeId == Id)
+                return ColisionStatus.None;
+
+            return ColisionStatus.Lose;
+        }
+
+        if (cell is FoodCell)
+        {
+            AddLength();
+            return ColisionStatus.Win;
+        }
+
+        throw new InvalidOperationException();
+    }
+
+    private void AddLength()
+    {
+        var offset = _body[^2] - _body[^1];
+        _body.Add(_body[^1] + offset);
     }
 
     private Vector2D GetNextPosition()
     {
+        var headPosition = _body[0];
+
         switch (_direction)
         {
-            case Direction.Down: return new Vector2D(Position) { Y = (Position.Y + 1) % _fieldSize.Y };
-            case Direction.Right: return new Vector2D(Position) { X = (Position.X + 1) % _fieldSize.X };
-            case Direction.Left:
-                var newX = Position.X - 1;
+            case SnakeDirection.Down: return new Vector2D(headPosition) { Y = (headPosition.Y + 1) % _fieldSize.Y };
+            case SnakeDirection.Right: return new Vector2D(headPosition) { X = (headPosition.X + 1) % _fieldSize.X };
+            case SnakeDirection.Left:
+                var newX = headPosition.X - 1;
                 if (newX < 0) newX = _fieldSize.X - 1;
-                return new Vector2D(Position) { X = newX };
-            case Direction.Up:
-                var newY = Position.X - 1;
-                if (newY < 0) newY = _fieldSize.X - 1;
-                return new Vector2D(Position) { X = newY };
+                return new Vector2D(headPosition) { X = newX };
+            case SnakeDirection.Up:
+                var newY = headPosition.Y - 1;
+                if (newY < 0) newY = _fieldSize.Y - 1;
+                return new Vector2D(headPosition) { Y = newY };
+            default:
+                throw new InvalidOperationException(_direction.ToString());
+        }
+    }
+
+    private SnakeDirection GetNextDirection()
+    {
+        var clockwise = _random.Next(2) == 1;
+
+        switch (_direction)
+        {
+            case SnakeDirection.Down: return clockwise ? SnakeDirection.Left : SnakeDirection.Right;
+            case SnakeDirection.Right: return clockwise ? SnakeDirection.Down : SnakeDirection.Up;
+            case SnakeDirection.Left: return clockwise ? SnakeDirection.Up : SnakeDirection.Down;
+            case SnakeDirection.Up: return clockwise ? SnakeDirection.Right : SnakeDirection.Left;
             default:
                 throw new InvalidOperationException(_direction.ToString());
         }

@@ -11,97 +11,98 @@ namespace SnakeGen.Models;
 public class Field
 {
     private const double FoodCount = 0.01;  // Примерный процент клеток поля, занятых едой.
-    private const double WallCount = 0.00;  // Примерный процент клеток поля, которые будут стенами.
+    private const double WallCount = 0.01;  // Примерный процент клеток поля, которые будут стенами.
     private const int MinWallLength = 2;    // Минимальная длина стенки. 
     private const int MaxWallLength = 12;    // Максимальная длина стенки.
 
     public FieldParameters Parameters { get; }
 
-    private List<Snake> _gameObjects;
-    private readonly IEnumerable<ICell> _staticCells;
+    private List<Snake> _snakes;
     private readonly List<ICell> _cells = new List<ICell>();
     private readonly int _foodCellCount;
+    private readonly Random _random = new Random();
+    private List<ICell> _prevCells = new List<ICell>();
 
     public Field(FieldParameters parameters)
     {
         Parameters = parameters;
-        _staticCells = CreateWalls();
-        _gameObjects = new();
+        _cells.AddRange(CreateWalls());
+        _snakes = new();
         _foodCellCount = (int) (Parameters.Size.X * Parameters.Size.Y * FoodCount);
-
-        var random = new Random();
 
         for (int i = 0; i < parameters.SnakeCount; i++)
         {
-            var position = new Vector2D(random.Next(Parameters.Size.X), random.Next(Parameters.Size.Y));
+            var position = new Vector2D(_random.Next(Parameters.Size.X), _random.Next(Parameters.Size.Y));
             var snake = new Snake(position, Parameters.Size);
             var cells = snake.GetCells();
 
-            if (!cells.Select(x => x.Position).Intersect(_staticCells.Select(x => x.Position)).Any())
+            if (!cells.Select(x => x.Position).Intersect(_cells.Select(x => x.Position)).Any())
             {
-                _gameObjects.Add(snake);
+                _snakes.Add(snake);
             }
         }
 
-        var fieldCells = GetCells();
-        var freePositions = GetFreeVectors(fieldCells).ToList();
-
-        for (int i = 0; i < _foodCellCount; i++)
-        {
-            var vector = freePositions[random.Next(freePositions.Count)];
-            _cells.Add(new FoodCell(vector));
-            freePositions.Remove(vector);
-        }
-    }
-
-    public IEnumerable<ICell> GetCells()
-    {
-        var cells = new List<ICell>();
-
-        foreach (var go in _gameObjects)
-            cells.AddRange(go.GetCells());
-
-        cells.AddRange(_staticCells);
-        cells.AddRange(_cells);
-        return cells;
+        var fieldCells = Tick().Cells;
+        var freePositions = GetFreeVectors(fieldCells).OrderBy(_ => Guid.NewGuid());
+        var foodPositions = freePositions.Take(_foodCellCount);
+        var foodCells = foodPositions.Select(x => new FoodCell(x));
+        _cells.AddRange(foodCells);
     }
 
     public FieldData Tick()
     {
-        var cells = new List<ICell>();
-        cells.AddRange(_staticCells);
-        cells.AddRange(_cells);
+        var deletedCells = new List<ICell>();
+        var deletedSnakes = new List<Snake>();
+        var cells = new List<ICell>(_cells);
 
-        var collidedSnakes = new List<Snake>();
+        _snakes.ForEach(x => { 
+            x.Tick(_prevCells);
+            cells.AddRange(x.GetCells()); 
+        });
 
-        foreach (var go in _gameObjects)
+        foreach (var snake in _snakes)
         {
-            var tickCells = go.Tick();
-            var isCollision = false;
-
             foreach (var cell in cells)
             {
-                var collisionCell = tickCells.FirstOrDefault(x => x.Position == cell.Position);
+                var collisionStatus = snake.CheckColision(cell);
 
-                if (collisionCell != null)
+                if (collisionStatus == ColisionStatus.None)
+                    continue;
+
+                if (collisionStatus == ColisionStatus.Win)
                 {
-                    isCollision = true;
-                    break;
+                    deletedCells.Add(cell);
+                    continue;
                 }
+
+                if (collisionStatus == ColisionStatus.Lose)
+                {
+                    deletedSnakes.Add(snake);
+                    continue;
+                }
+
+                throw new InvalidOperationException();
             }
-
-            if (!isCollision)
-                cells.AddRange(tickCells);
-            else
-                collidedSnakes.Add(go);
-
-            cells.AddRange(tickCells);
         }
 
-        foreach (var collidedSnake in collidedSnakes)
-            _gameObjects.Remove(collidedSnake);
+        foreach (var deletedSnake in deletedSnakes)
+            _snakes.Remove(deletedSnake);
 
-        return new(this, cells);
+        foreach (var deletedCell in deletedCells)
+            _cells.Remove(deletedCell);
+
+        if (_cells.Where(x => x is FoodCell).Count() < _foodCellCount)
+        {
+            var position = new Vector2D(_random.Next(Parameters.Size.X), _random.Next(Parameters.Size.Y));
+            
+            if (!cells.Any(x => x.Position == position))
+                _cells.Add(new FoodCell(position));
+        }
+
+        var result = new List<ICell>(_cells);
+        _prevCells = result;
+        _snakes.ForEach(x => result.AddRange(x.GetCells()));
+        return new(this, result);
     }
 
     private IEnumerable<ICell> CreateWalls()

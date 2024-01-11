@@ -84,7 +84,8 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void StopGame()
     {
-        _game.Stop();
+        if (_game.IsStarted)
+            _game.Stop();
     }
 
     public void OnPropertyChanged(string prop)
