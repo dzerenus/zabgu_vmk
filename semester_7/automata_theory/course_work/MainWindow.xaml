@@ -55,6 +55,7 @@
 
             <Button Content="Создать поле" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.InitializeFieldCommand}"/>
             <Button Content="Начать" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.StartGameCommand}"/>
+            <Button Content="Остановить" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.StopGameCommand}"/>
         </StackPanel>
     </Grid>
 </Window>

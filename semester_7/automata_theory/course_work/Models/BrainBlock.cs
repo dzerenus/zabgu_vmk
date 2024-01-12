@@ -15,8 +15,8 @@ public class BrainBlock
 
 public class BrainNeuron 
 { 
-    public int Continue { get; }
-    public int Rotate { get; }
+    public int Continue { get; set; }
+    public int Rotate { get; set; }
 
     public BrainNeuron(int @continue, int rotate)
     {

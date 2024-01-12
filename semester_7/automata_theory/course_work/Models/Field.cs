@@ -10,13 +10,14 @@ namespace SnakeGen.Models;
 /// </summary>
 public class Field
 {
-    private const double FoodCount = 0.01;  // Примерный процент клеток поля, занятых едой.
-    private const double WallCount = 0.01;  // Примерный процент клеток поля, которые будут стенами.
+    private const double FoodCount = 0.4;  // Примерный процент клеток поля, занятых едой.
+    private const double WallCount = 0.000;  // Примерный процент клеток поля, которые будут стенами.
     private const int MinWallLength = 2;    // Минимальная длина стенки. 
     private const int MaxWallLength = 12;    // Максимальная длина стенки.
 
     public FieldParameters Parameters { get; }
 
+    private List<Brain> _brains = new();
     private List<Snake> _snakes;
     private readonly List<ICell> _cells = new List<ICell>();
     private readonly int _foodCellCount;
@@ -53,11 +54,16 @@ public class Field
     {
         var deletedCells = new List<ICell>();
         var deletedSnakes = new List<Snake>();
+        var addedSnakes = new List<Snake>();
         var cells = new List<ICell>(_cells);
 
         _snakes.ForEach(x => { 
             x.Tick(_prevCells);
-            cells.AddRange(x.GetCells()); 
+
+            if (x.Length >= 4)
+                cells.AddRange(x.GetCells());
+            else
+                deletedSnakes.Add(x);
         });
 
         foreach (var snake in _snakes)
@@ -71,6 +77,12 @@ public class Field
 
                 if (collisionStatus == ColisionStatus.Win)
                 {
+                    if (snake.Length > 16)
+                    {
+                        var vectors = snake.Split();
+                        addedSnakes.Add(new Snake(vectors.First(), Parameters.Size, snake.GetBrainCopy(_random.Next(100) > 75), vectors));
+                    }
+
                     deletedCells.Add(cell);
                     continue;
                 }
@@ -86,7 +98,14 @@ public class Field
         }
 
         foreach (var deletedSnake in deletedSnakes)
+        {
+            _brains.Insert(0, deletedSnake.GetBrainCopy(false));
+
+            if (_brains.Count > 500)
+                _brains.RemoveRange(499, _brains.Count - 500);
+
             _snakes.Remove(deletedSnake);
+        }
 
         foreach (var deletedCell in deletedCells)
             _cells.Remove(deletedCell);
@@ -99,9 +118,46 @@ public class Field
                 _cells.Add(new FoodCell(position));
         }
 
+        if (_snakes.Count == 0)
+        {
+            var vectors = GetFreeVectors(_cells).OrderBy(_ => Guid.NewGuid()).ToList();
+
+            var prevBrain = _brains[0];
+            _brains.RemoveAt(0);
+
+            int toNextBrain = Parameters.SnakeCount / 5;
+            var toNext = new List<int>() { Parameters.SnakeCount / 5, Parameters.SnakeCount / 5, Parameters.SnakeCount / 10, Parameters.SnakeCount / 10, Parameters.SnakeCount / 10 };
+
+            for (int i = 0; i < Parameters.SnakeCount; i++)
+            {
+                if (toNextBrain == 0)
+                {
+                    if (toNext.Count > 0)
+                    {
+                        toNextBrain = toNext[0];
+                        toNext.RemoveAt(0);
+                    } 
+
+                    else
+                    {
+                        toNextBrain = 1;
+                    }
+
+                    prevBrain = _brains[0];
+                    _brains.RemoveAt(0);
+                }
+
+                _snakes.Add(new Snake(vectors[0], Parameters.Size, prevBrain.GetCopy(_random.Next(100) > 74), null));
+                vectors.RemoveAt(0);
+
+                toNextBrain--;
+            }
+        }
+
         var result = new List<ICell>(_cells);
-        _prevCells = result;
+        _snakes.AddRange(addedSnakes);
         _snakes.ForEach(x => result.AddRange(x.GetCells()));
+        _prevCells = result;
         return new(this, result);
     }
 
@@ -127,6 +183,19 @@ public class Field
                 if (!cells.Any(x => x.Position == position))
                     cells.Add(new WallCell(position));
             }
+        }
+
+        for (int x = 0; x < Parameters.Size.X; x++)
+        {
+            if (x != 0 && x != Parameters.Size.X - 1)
+            {
+                cells.Add(new WallCell(new Vector2D(x, 0)));
+                cells.Add(new WallCell(new Vector2D(x, Parameters.Size.Y - 1)));
+                continue;
+            }
+
+            for (int y = 0; y < Parameters.Size.Y; y++)
+                cells.Add(new WallCell(new Vector2D(x, y)));
         }
 
         return cells;

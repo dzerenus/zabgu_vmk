@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -69,7 +68,7 @@ public sealed class Game
         if (_field == null || _parameters == null || !IsStarted)
             throw new InvalidOperationException("Неверная стартовая конфигурация.");
 
-        var delay = (int)(20 * _parameters.TimeMultiplier);
+        var delay = (int)(10 * _parameters.TimeMultiplier);
 
         while (IsStarted)
         {

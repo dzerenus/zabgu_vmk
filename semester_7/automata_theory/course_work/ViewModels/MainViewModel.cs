@@ -60,10 +60,11 @@ public class MainViewModel : INotifyPropertyChanged
 
     public ICommand InitializeFieldCommand => new CommandHandler(InitializeField);
     public ICommand StartGameCommand => new CommandHandler(_game.Start);
+    public ICommand StopGameCommand => new CommandHandler(_game.Stop);
 
-    private int _snakeCount = 10;
-    private int _fieldSizeY = 50;
-    private int _fieldSizeX = 50;
+    private int _snakeCount = 50;
+    private int _fieldSizeY = 120;
+    private int _fieldSizeX = 200;
 
     private Game _game;
     public MainViewModel()
