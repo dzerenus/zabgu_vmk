@@ -11,15 +11,26 @@ public class Brain
 {
     static readonly Vector2D Size = new Vector2D(3, 6);
     static readonly Vector2D HeadPosition = new Vector2D(0, 3);
-    
+
+    public int Mutations { get; }
+    public string Color { get => _color.GetHex(); }
+
     private readonly Random _random = new Random();
     private readonly List<List<BrainBlock?>> _blocks;
-    public Brain(List<List<BrainBlock?>>? blocks = null)
+    private readonly SnakeColor _color;
+
+    public Brain(int mutations = 0, List<List<BrainBlock?>>? blocks = null, SnakeColor? color = null)
     {
+        Mutations = mutations;
+
+        if (color != null)
+            _color = color;
+
+        else
+            _color = SnakeColor.Random();
+
         if (blocks != null)
-        {
             _blocks = blocks;
-        }
 
         else
         {
@@ -37,10 +48,10 @@ public class Brain
                         continue;
                     }
 
-                    var foodContinue = _random.Next(-5, 5);
-                    var foodRotate = _random.Next(-5, 5);
-                    var wallContinue = _random.Next(-5, 5);
-                    var wallRotate = _random.Next(-5, 5);
+                    var foodContinue = _random.Next(-3, 3);
+                    var foodRotate = _random.Next(-3, 3);
+                    var wallContinue = _random.Next(-3, 3);
+                    var wallRotate = _random.Next(-3, 3);
 
                     row.Add(new BrainBlock(new BrainNeuron(foodContinue, foodRotate), new BrainNeuron(wallContinue, wallRotate)));
                 }
@@ -49,15 +60,16 @@ public class Brain
             }
 
             var block = _blocks[2][0] ?? throw new NullReferenceException();
-            block.Wall.Continue = 20;
+            block.Wall.Continue = 10;
             block = _blocks[3][1] ?? throw new NullReferenceException();
-            block.Wall.Rotate = 20;
+            block.Wall.Rotate = 10;
         }
     }
 
     public Brain GetCopy(bool mutate)
     {
         var result = new List<List<BrainBlock?>>();
+        var color = mutate ? _color.Mutate() : _color;
 
         foreach (var row in _blocks)
         {
@@ -101,7 +113,7 @@ public class Brain
             result.Add(resultRow);
         }
 
-        return new Brain(result);
+        return new Brain(mutate ? Mutations + 1 : Mutations, result, color);
     }
 
     public SnakeDirection? GetDirection(Vector2D head, SnakeDirection currentDirection, IEnumerable<ICell> cells)
@@ -138,7 +150,7 @@ public class Brain
                 index = new Vector2D(index) { X = index.X * -1 };
             }
 
-            var multiplier = 1; //(int) (6 / Math.Sqrt(index.X * index.X + index.Y * index.Y));
+            var multiplier = (int) (6 / Math.Sqrt(index.X * index.X + index.Y * index.Y));
 
             var neuron = _blocks[index.Y][index.X];
 
@@ -192,7 +204,7 @@ public class Brain
         return GetNextDirection(currentDirection, right < left);
     }
 
-    private SnakeDirection GetNextDirection(SnakeDirection _direction, bool clockwise)
+    private static SnakeDirection GetNextDirection(SnakeDirection _direction, bool clockwise)
     {
         switch (_direction)
         {

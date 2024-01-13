@@ -7,6 +7,38 @@ namespace SnakeGen.ViewModels;
 
 public class MainViewModel : INotifyPropertyChanged
 {
+    public string WallCount
+    {
+        get => _wallCount.ToString();
+        set
+        {
+            if (!int.TryParse(value, out var wallCount))
+            {
+                OnPropertyChanged(nameof(WallCount));
+                return;
+            }
+
+            _wallCount = wallCount;
+            OnPropertyChanged(nameof(WallCount));
+        }
+    }
+
+    public string FoodCount
+    {
+        get => _foodCount.ToString();
+        set
+        {
+            if (!double.TryParse(value, out var foodCount))
+            {
+                OnPropertyChanged(nameof(FoodCount));
+                return;
+            }
+
+            _foodCount = foodCount;
+            OnPropertyChanged(nameof(FoodCount));
+        }
+    }
+
     public string FieldSizeX
     {
         get => _fieldSizeX.ToString();
@@ -59,12 +91,14 @@ public class MainViewModel : INotifyPropertyChanged
     }
 
     public ICommand InitializeFieldCommand => new CommandHandler(InitializeField);
-    public ICommand StartGameCommand => new CommandHandler(_game.Start);
+    public ICommand StartGameCommand => new CommandHandler(() => _game.Start(_foodCount));
     public ICommand StopGameCommand => new CommandHandler(_game.Stop);
 
-    private int _snakeCount = 50;
-    private int _fieldSizeY = 120;
-    private int _fieldSizeX = 200;
+    private int _snakeCount = 120;
+    private int _fieldSizeY = 190;
+    private int _fieldSizeX = 300;
+    private int _wallCount = 0;
+    private double _foodCount = 0.002;
 
     private Game _game;
     public MainViewModel()
@@ -79,7 +113,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void InitializeField()
     {
-        var parameters = new GameParameters(new Vector2D(_fieldSizeX, _fieldSizeY), 1, 1, 1, _snakeCount);
+        var parameters = new GameParameters(new Vector2D(_fieldSizeX, _fieldSizeY), 1, 1, 1, _snakeCount, _wallCount);
         _game.Initialize(parameters);
     }
 

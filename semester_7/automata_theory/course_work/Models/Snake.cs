@@ -31,6 +31,8 @@ public class Snake
     /// </summary>
     public Guid Id { get; } = Guid.NewGuid();
 
+    public int FoodCount { get; private set; } = 0;
+
     public int Energy { get; private set; } = MaxEnergy;
     
     public int Length { get => _body.Count; }
@@ -38,7 +40,7 @@ public class Snake
     /// <summary>
     /// Цвет змеи.
     /// </summary>
-    public string Color { get; } = "#ef5749";
+    public string Color { get => _brain.Color; }
 
     private SnakeDirection _direction = SnakeDirection.Up;
 
@@ -141,6 +143,7 @@ public class Snake
         var offset = _body[^2] - _body[^1];
         _body.Add(_body[^1] + offset);
         Energy = MaxEnergy;
+        FoodCount++;
     }
 
     private Vector2D GetNextPosition()

@@ -12,6 +12,8 @@ public sealed class Game
     private GameParameters? _parameters;
     private Field? _field;
 
+    private double _foodCount = 0.02;
+
     #region Singleton Implementation
     private static Game? _instance;
 
@@ -38,16 +40,18 @@ public sealed class Game
         _field = new Field(parameters);
         _parameters = parameters;
 
-        OnFieldChanged?.Invoke(_field.Tick());
+        OnFieldChanged?.Invoke(_field.Tick(0.02));
     }
 
-    public void Start()
+    public void Start(double foodCount)
     {
         if (IsStarted)
             throw new InvalidOperationException("Игра уже запущена.");
 
         if (_field == null || _parameters == null)
             throw new InvalidOperationException("Неверная стартовая конфигурация.");
+
+        _foodCount = foodCount;
 
         new Thread(async () => {
             IsStarted = true;
@@ -68,7 +72,7 @@ public sealed class Game
         if (_field == null || _parameters == null || !IsStarted)
             throw new InvalidOperationException("Неверная стартовая конфигурация.");
 
-        var delay = (int)(10 * _parameters.TimeMultiplier);
+        var delay = (int)(1 * _parameters.TimeMultiplier);
 
         while (IsStarted)
         {
@@ -82,7 +86,7 @@ public sealed class Game
         if (!IsStarted)
             return;
 
-        var fieldData = _field?.Tick();
+        var fieldData = _field?.Tick(_foodCount);
 
         if (fieldData != null)
             OnFieldChanged?.Invoke(fieldData);

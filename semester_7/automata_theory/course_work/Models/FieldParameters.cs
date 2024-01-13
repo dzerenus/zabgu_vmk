@@ -25,11 +25,15 @@ public class FieldParameters
     /// </summary>
     public int SnakeCount { get; }
 
-    public FieldParameters(Vector2D size, double foodMultiplier, double hungerMultiplier, int snakeCount)
+    public int WallCount { get; }
+
+
+    public FieldParameters(Vector2D size, double foodMultiplier, double hungerMultiplier, int snakeCount, int wallCount)
     {
         Size = size;
         FoodMultiplier = foodMultiplier;
         HungerMultiplier = hungerMultiplier;
         SnakeCount = snakeCount;
+        WallCount = wallCount;
     }
 }

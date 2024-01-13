@@ -53,6 +53,10 @@
                 <TextBox Grid.Column="1" Text="{x:Bind ViewModel.SnakeCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
+            <TextBox Grid.Column="1" Text="{x:Bind ViewModel.WallCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="1" Text="{x:Bind ViewModel.FoodCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
             <Button Content="Создать поле" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.InitializeFieldCommand}"/>
             <Button Content="Начать" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.StartGameCommand}"/>
             <Button Content="Остановить" HorizontalAlignment="Stretch" Command="{x:Bind ViewModel.StopGameCommand}"/>

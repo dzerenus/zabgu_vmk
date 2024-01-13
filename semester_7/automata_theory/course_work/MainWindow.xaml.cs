@@ -42,7 +42,7 @@ public sealed partial class MainWindow : Window
             StrokeWidth = 1,
         };
 
-        var cellSize = 8;
+        var cellSize = 5;
         var sizeY = _prevFieldData.Parameters.Size.Y;
         var sizeX = _prevFieldData.Parameters.Size.X;
         var fieldSizeY = cellSize * sizeY;
@@ -52,7 +52,7 @@ public sealed partial class MainWindow : Window
 
         // Рисование границ игрового поля.
 
-        for (int x = 0; x <= sizeX; x++)
+        for (int x = 0; x <= sizeX && cellSize > 6; x++)
         {
             var xCoord = fieldStartX + x * cellSize;
             var s1 = new SKPoint(xCoord, fieldStartY);
@@ -60,7 +60,7 @@ public sealed partial class MainWindow : Window
             canvas.DrawLine(s1, s2, paint);
         }
 
-        for (int y = 0; y <= sizeY; y++)
+        for (int y = 0; y <= sizeY && cellSize > 6; y++)
         {
             var yCoord = fieldStartY + y * cellSize;
             var s1 = new SKPoint(fieldStartX, yCoord);

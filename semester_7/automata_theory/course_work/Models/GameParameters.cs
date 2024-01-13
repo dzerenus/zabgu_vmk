@@ -10,8 +10,8 @@ public sealed class GameParameters : FieldParameters
     /// </summary>
     public double TimeMultiplier { get; }
 
-    public GameParameters(Vector2D size, double timeMultiplier, double foodMultiplier, double hungerMultiplier, int snakeCount) 
-        : base(size, foodMultiplier, hungerMultiplier, snakeCount)
+    public GameParameters(Vector2D size, double timeMultiplier, double foodMultiplier, double hungerMultiplier, int snakeCount, int wallCount) 
+        : base(size, foodMultiplier, hungerMultiplier, snakeCount, wallCount)
     {
         TimeMultiplier = timeMultiplier;
     }
