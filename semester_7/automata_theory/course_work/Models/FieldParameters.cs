@@ -10,15 +10,7 @@ public class FieldParameters
     /// </summary>
     public Vector2D Size { get; }
 
-    /// <summary>
-    /// Скорость появления пищи на поле.
-    /// </summary>
-    public double FoodMultiplier { get; }
-
-    /// <summary>
-    /// Скорость потребления пищи змейками.
-    /// </summary>
-    public double HungerMultiplier { get; }
+    public double FoodCoefficient { get; }
 
     /// <summary>
     /// Начальное количество змеек на поле.
@@ -28,11 +20,10 @@ public class FieldParameters
     public int WallCount { get; }
 
 
-    public FieldParameters(Vector2D size, double foodMultiplier, double hungerMultiplier, int snakeCount, int wallCount)
+    public FieldParameters(Vector2D size, double foodCoefficient, int snakeCount, int wallCount)
     {
         Size = size;
-        FoodMultiplier = foodMultiplier;
-        HungerMultiplier = hungerMultiplier;
+        FoodCoefficient = foodCoefficient;
         SnakeCount = snakeCount;
         WallCount = wallCount;
     }

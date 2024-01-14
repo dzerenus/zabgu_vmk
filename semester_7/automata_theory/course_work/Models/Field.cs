@@ -40,7 +40,7 @@ public class Field
 
         _cells.AddRange(CreateWalls(parameters.WallCount));
         _snakes = new();
-        _foodCellCount = (int) (Parameters.Size.X * Parameters.Size.Y * FoodCount);
+        _foodCellCount = (int) (Parameters.Size.X * Parameters.Size.Y * parameters.FoodCoefficient);
 
         for (int y = 0; y < Parameters.Size.Y; y++)
             for (int x = 0; x < Parameters.Size.X; x++)
@@ -58,7 +58,7 @@ public class Field
             }
         }
 
-        var fieldCells = Tick(0.02).Cells;
+        var fieldCells = Tick(Parameters.FoodCoefficient).Cells;
         var freePositions = GetFreeVectors(fieldCells).OrderBy(_ => Guid.NewGuid());
         var foodPositions = freePositions.Take(_foodCellCount);
         var foodCells = foodPositions.Select(x => new FoodCell(x));
@@ -133,7 +133,7 @@ public class Field
         foreach (var deletedCell in deletedCells)
             _cells.Remove(deletedCell);
 
-        if (_cells.Where(x => x is FoodCell).Count() < (int)(Parameters.Size.X * Parameters.Size.Y * foodCount))
+        while (_cells.Where(x => x is FoodCell).Count() < (int)(Parameters.Size.X * Parameters.Size.Y * foodCount))
         {
             var position = new Vector2D(_random.Next(Parameters.Size.X), _random.Next(Parameters.Size.Y));
 

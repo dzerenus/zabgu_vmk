@@ -113,7 +113,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void InitializeField()
     {
-        var parameters = new GameParameters(new Vector2D(_fieldSizeX, _fieldSizeY), 1, 1, 1, _snakeCount, _wallCount);
+        var parameters = new GameParameters(new Vector2D(_fieldSizeX, _fieldSizeY), 1, _foodCount, 1, _snakeCount, _wallCount);
         _game.Initialize(parameters);
     }
 
