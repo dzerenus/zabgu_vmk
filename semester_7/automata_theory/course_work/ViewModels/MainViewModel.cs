@@ -91,7 +91,10 @@ public class MainViewModel : INotifyPropertyChanged
     }
 
     public ICommand InitializeFieldCommand => new CommandHandler(InitializeField);
-    public ICommand StartGameCommand => new CommandHandler(() => _game.Start(_foodCount));
+    public ICommand StartGameCommand => new CommandHandler(() => {
+        if (!_game.IsStarted)
+            _game.Start(_foodCount);
+    });
     public ICommand StopGameCommand => new CommandHandler(_game.Stop);
 
     private int _snakeCount = 120;
@@ -113,6 +116,9 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void InitializeField()
     {
+        if (_game.IsStarted)
+            _game.Stop();
+
         var parameters = new GameParameters(new Vector2D(_fieldSizeX, _fieldSizeY), 1, _foodCount, 1, _snakeCount, _wallCount);
         _game.Initialize(parameters);
     }

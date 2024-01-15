@@ -143,7 +143,7 @@ public class Field
 
         if (_snakes.Count == 0)
         {
-            File.AppendAllText($@"D:\Змейки\{_fileName}", $"{DateTimeOffset.Now} - {_currentTicks}\n");
+            //File.AppendAllText($@"D:\Змейки\{_fileName}", $"{DateTimeOffset.Now} - {_currentTicks}\n");
             _iterations.Add(DateTimeOffset.Now, _currentTicks);
             _currentTicks = 0;
 
